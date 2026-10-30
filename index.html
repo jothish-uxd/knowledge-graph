@@ -597,13 +597,12 @@
   .flow-node span { font-size: 12px; color: var(--ink-soft); }
   .flow-arrows { display: grid; gap: 10px; min-width: 0; }
   .flow-label { font-size: 12.5px; color: var(--ink-soft); }
-  .flow-label.is-top { text-align: right; }
-  .flow-label.is-bottom { text-align: left; }
+  .flow-label.is-top, .flow-label.is-bottom { text-align: center; }
   .flow-label.is-zero { color: var(--ink-faint); }
   .flow-label strong { color: var(--ink); font-family: var(--mono); font-weight: 500; }
-  .flow-line { display: flex; align-items: center; min-height: 44px; }
-  .flow-line .shaft { flex: 1; height: 3px; background: var(--ink); }
-  .flow-line .cap { flex: none; width: 3px; height: 14px; background: var(--ink); }
+  .flow-line { display: flex; align-items: center; min-height: 32px; opacity: .45; }   /* same ink and weight as the graph's lines */
+  .flow-line .shaft { flex: 1; height: 2px; background: var(--ink); }
+  .flow-line .cap { flex: none; width: 2px; height: 10px; background: var(--ink); }
   .flow-line .head { flex: none; width: 0; height: 0; border-top: var(--h) solid transparent; border-bottom: var(--h) solid transparent; }
   .flow-line .head.is-right { border-left: calc(var(--h) * 1.45) solid var(--ink); }
   .flow-line .head.is-left { border-right: calc(var(--h) * 1.45) solid var(--ink); }
@@ -855,8 +854,8 @@
       <div class="field">
         <span class="group-label" id="groupLabel">Group by</span>
         <div class="segmented" role="group" aria-labelledby="groupLabel">
-          <button type="button" data-group="none" aria-pressed="true">None</button>
-          <button type="button" data-group="team" aria-pressed="false">Team or firm</button>
+          <button type="button" data-group="team" aria-pressed="true">Team or firm</button>
+          <button type="button" data-group="none" aria-pressed="false">None</button>
         </div>
       </div>
       <div class="field">
@@ -1556,7 +1555,7 @@ const sevWord = s => s === "high" ? "High" : "Medium";
 /* ======================================================================
    State and the view model
    ====================================================================== */
-const DEFAULTS = () => ({ types: new Set(["employee", "external"]), channels: new Set(CHANNELS), center: "", limit: 10, size: "standard", group: "none", labels: false, sel: null, view: "graph" });
+const DEFAULTS = () => ({ types: new Set(["employee", "external"]), channels: new Set(CHANNELS), center: "", limit: 10, size: "standard", group: "team", labels: false, sel: null, view: "graph" });
 let state = DEFAULTS();
 let VIEW = null;
 
@@ -2688,7 +2687,7 @@ function renderRel() {
 
 function flowHTML(e, pe, A, B, msgs, ab, ba) {
   const max = Math.max(1, ab, ba);
-  const hs = n => (7 + 15 * n / max).toFixed(1);
+  const hs = n => (4 + 7 * n / max).toFixed(1);
   const lbl = (n, f, to, cls) => `<span class="flow-label ${cls}${n ? "" : " is-zero"}">${esc(shortN(f))} → ${esc(shortN(to))} · <strong>${n}</strong> message${n === 1 ? "" : "s"}</span>`;
   const box = id => { const n = NODES.get(id); return `<div class="flow-node">${glyph(n.type)}<strong>${esc(n.label)}</strong><span>${esc(n.type === "employee" ? `${n.role} · ${n.dept}` : n.type === "external" ? `${n.role} · ${n.firm}` : n.sub)}</span></div>`; };
   const rows = CHANNELS.filter(ch => e.channels[ch]).map(ch => {
