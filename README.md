@@ -7,7 +7,8 @@ The site is a single page, `index.html`. Open it in a browser; no build step.
 ## Pages
 
 - **Overview:** what the graph is for and what this version does differently.
-- **Explorer:** the working graph. Choose resource types and channels, center on any resource, set a node limit (50 max), and group by team or firm. Read the same view as a graph, a table, or a written summary. Select a resource, relationship or signal to see details, channel volumes, and cross-channel threads.
+- **Explorer:** the working graph. Choose resource types and channels, center on any resource, set a node limit (50 max), and group by team or firm. Read the same view as a graph, a table, or a written summary. Select a resource, relationship or signal to see details, channel volumes, and cross-channel threads. Lines carry an arrowhead at each end, sized by the messages flowing that way.
+- **Relationship timeline:** select a line (or press E on a focused node) to open a near-full-screen view: the conversation flow in each direction, daily volume against the pair's mean ± kσ (1, 2 or 3σ), send times against the pair's usual hours, a list of anomalies, and a conversation panel that highlights policy flags (off-channel, information barrier, secrecy language, possible inside information, possible collusion).
 - **Data model:** node and edge types, edge properties, and example Cypher and GraphQL (Relay-style, paged at 50).
 - **Accessibility:** keyboard map, the three reading layers, and the rules the graph follows.
 

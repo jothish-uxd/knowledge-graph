@@ -513,6 +513,170 @@
 
   .footer { margin-top: 120px; padding-top: 24px; border-top: 1px solid var(--rule); font-size: 12.5px; color: var(--ink-faint); max-width: none; }
 
+
+  /* ---------- Directional arrows on graph edges ---------- */
+  .edge-arrow { fill: currentColor; opacity: .7; transition: opacity .15s ease; }
+  .edge.is-unmonitored .edge-arrow { opacity: .85; }
+  .edge:hover .edge-arrow { opacity: 1; }
+  .has-selection .edge .edge-arrow { opacity: .1; }
+  .has-selection .edge.is-related .edge-arrow { opacity: 1; }
+  .is-grouped:not(.has-selection) .edge.is-cross .edge-arrow { opacity: .22; }
+
+  /* ---------- Relationship modal (90% of the screen) ---------- */
+  html.modal-open { overflow: hidden; }
+  .rel-modal {
+    width: 90vw; height: 90vh; max-width: none; max-height: none; padding: 0;
+    border: 1px solid var(--rule-strong); border-radius: 14px; background: var(--bg); color: var(--ink);
+    box-shadow: 0 40px 100px -24px rgb(0 0 0 / .45); overflow: hidden;
+  }
+  .rel-modal::backdrop { background: rgb(0 0 0 / .42); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
+  .rel-modal[open] { animation: rel-in .18s ease-out; }
+  @keyframes rel-in { from { opacity: 0; transform: translateY(8px) scale(.99); } }
+  @media (prefers-reduced-motion: reduce) { .rel-modal[open] { animation: none; } }
+  .rel-shell { display: flex; flex-direction: column; width: 100%; height: 100%; }
+  .rel-head { display: flex; align-items: flex-start; gap: 16px 28px; padding: 18px 24px 16px; border-bottom: 1px solid var(--rule); flex: none; }
+  .rel-head-main { min-width: 0; flex: 1; }
+  .rel-title { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 600; letter-spacing: -.025em; }
+  .rel-title:focus { outline: none; }
+  .rel-sub { margin: 4px 0 0; font-size: 13.5px; color: var(--ink-soft); }
+  .rel-head-actions { display: flex; align-items: flex-end; gap: 14px; flex: none; }
+  .rel-k .segmented { height: 32px; }
+  .rel-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) clamp(340px, 30vw, 460px); }
+  .rel-main { min-width: 0; overflow-y: auto; padding: 22px 24px 40px; display: grid; grid-auto-rows: max-content; gap: 36px; align-content: start; }
+  .rel-panel { min-width: 0; overflow-y: auto; border-left: 1px solid var(--rule); background: var(--bg-subtle); }
+  .rel-stats { margin: 0; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .rel-signals { display: grid; gap: 8px; }
+  .rel-signals .msg + .msg { margin-top: 0; }
+  .rel-section h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+  .rel-section .desc { margin: 0 0 12px; font-size: 13px; color: var(--ink-soft); max-width: 78ch; }
+  .count-tag { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--ink-faint); }
+  .chart-legend { margin: 0 0 8px; }
+  .chart-legend svg { width: 14px; height: 14px; }
+  .chart-legend .line-swatch { width: 24px; }
+  .chart-box { width: 100%; min-height: 40px; }
+  .chart-svg { display: block; color: var(--ink); font-family: var(--font); overflow: visible; }
+  .axis text { font-size: 10.5px; fill: var(--ink-faint); font-family: var(--mono); }
+  .axis line { stroke: var(--rule); }
+  .band { fill: color-mix(in srgb, var(--ink) 8%, transparent); }
+  .band-edge { stroke: var(--ink-faint); stroke-dasharray: 3 3; stroke-width: 1; }
+  .wkend { fill: color-mix(in srgb, var(--ink) 3.5%, transparent); }
+  .mean-line { stroke: var(--ink); stroke-width: 1.25; }
+  .thresh-line { stroke: var(--warning); stroke-width: 1.8; stroke-dasharray: 5 4; }
+  .chart-lines { pointer-events: none; }
+  .line-label { font-size: 11px; font-family: var(--mono); fill: var(--ink-soft); paint-order: stroke; stroke: var(--bg); stroke-width: 4px; stroke-linejoin: round; }
+  .day-bar { cursor: pointer; outline: none; }
+  .day-bar .bar-hit { fill: transparent; }
+  .day-bar:hover .bar-hit { fill: color-mix(in srgb, var(--ink) 5%, transparent); }
+  .day-bar .bar { fill: var(--ink); opacity: .72; }
+  .day-bar:hover .bar, .day-bar.is-sel .bar { opacity: 1; }
+  .day-bar.is-anom .bar { fill: url(#kg-warn); opacity: 1; stroke: var(--warning); stroke-width: 1.5px; }
+  .day-bar.is-sel .bar-hit { fill: color-mix(in srgb, var(--ink) 9%, transparent); stroke: var(--ink); stroke-width: 1.5px; }
+  .day-bar .focus-ring { fill: none; stroke: var(--focus); stroke-width: 2px; opacity: 0; }
+  .day-bar:focus-visible .focus-ring { opacity: 1; }
+  .anom-mark { fill: var(--warning); }
+  .day-sel { fill: color-mix(in srgb, var(--ink) 7%, transparent); stroke: var(--ink); stroke-width: 1.25px; stroke-dasharray: 3 3; }
+  .dot { cursor: pointer; }
+  .dot .d-hit { fill: transparent; }
+  .dot.ab .d-shape { fill: var(--ink); }
+  .dot.ba .d-shape { fill: var(--bg); stroke: var(--ink); stroke-width: 1.5px; }
+  .dot.is-off .d-shape { fill: var(--warning); stroke: var(--warning); }
+  .dot.is-off.ba .d-shape { fill: var(--bg); stroke-width: 1.8px; }
+  .dot .viol { fill: none; stroke: var(--error); stroke-width: 1.6px; }
+  .dot .d-sel { fill: none; stroke: var(--ink); stroke-width: 2px; opacity: 0; }
+  .dot.is-focus .d-sel { opacity: 1; }
+  .dot:hover .d-shape { transform: scale(1.35); }
+
+  .flow { display: grid; grid-template-columns: minmax(0, 190px) minmax(0, 1fr) minmax(0, 190px); align-items: center; gap: 20px; padding: 22px 20px; margin-bottom: 12px; border: 1px solid var(--rule); border-radius: 12px; }
+  .flow-node { display: grid; justify-items: center; text-align: center; gap: 4px; min-width: 0; }
+  .flow-node .glyph { width: 30px; height: 30px; margin-bottom: 4px; }
+  .flow-node strong { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+  .flow-node span { font-size: 12px; color: var(--ink-soft); }
+  .flow-arrows { display: grid; gap: 20px; min-width: 0; }
+  .flow-arrow { display: grid; gap: 6px; }
+  .flow-label { font-size: 12.5px; color: var(--ink-soft); text-align: center; }
+  .flow-label strong { color: var(--ink); font-family: var(--mono); font-weight: 500; }
+  .flow-line { display: flex; align-items: center; }
+  .flow-line .shaft { flex: 1; height: var(--t); background: var(--ink); border-radius: 1px; }
+  .flow-line .head { flex: none; width: 0; height: 0; border-top: calc(var(--t) * .8 + 6px) solid transparent; border-bottom: calc(var(--t) * .8 + 6px) solid transparent; border-left: calc(var(--t) * 1.2 + 11px) solid var(--ink); }
+  .flow-arrow.is-rev .flow-line { flex-direction: row-reverse; }
+  .flow-arrow.is-rev .head { border-left: 0; border-right: calc(var(--t) * 1.2 + 11px) solid var(--ink); }
+  .flow-arrow.is-empty .shaft { height: 0; background: none; border-top: 1.5px dashed var(--rule-strong); }
+  .flow-arrow.is-empty .head { display: none; }
+  .flow-table th.num, .flow-table td.num { text-align: right; font-family: var(--mono); }
+
+  .anom-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+  .anom-btn {
+    appearance: none; width: 100%; height: 100%; display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 10px; align-items: start;
+    padding: 10px 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); cursor: pointer; text-align: left;
+  }
+  .anom-btn:hover { background: var(--bg-subtle); border-color: var(--rule-strong); }
+  .anom-btn svg { width: 16px; height: 16px; color: var(--warning); margin-top: 2px; }
+  .anom-btn > span { display: grid; gap: 2px; }
+  .anom-title { font-size: 13.5px; font-weight: 500; }
+  .anom-sub { font-size: 12.5px; color: var(--ink-soft); }
+  .rel-details summary { cursor: pointer; font-size: 13.5px; font-weight: 500; color: var(--ink-soft); }
+  .rel-details summary:hover { color: var(--ink); }
+  .rel-details[open] summary { margin-bottom: 12px; }
+  .rel-details td.num, .rel-details th.num { text-align: right; font-family: var(--mono); }
+
+  .rp-head { position: sticky; top: 0; z-index: 2; padding: 16px 20px 14px; background: var(--bg-subtle); border-bottom: 1px solid var(--rule); }
+  .rp-top { display: flex; align-items: center; justify-content: space-between; margin: -6px 0 6px; }
+  .rp-top .text-button { height: 30px; padding: 0; }
+  .rp-nav { display: inline-flex; gap: 6px; }
+  .rp-nav .icon-button { height: 28px; min-width: 28px; font-size: 16px; }
+  .rp-nav .icon-button:disabled { opacity: .4; cursor: default; }
+  .rp-title { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
+  .rp-title:focus { outline: none; }
+  .rp-sub { margin: 4px 0 0; font-size: 12.5px; color: var(--ink-soft); }
+  .rp-sub strong { color: var(--error); font-weight: 600; }
+  .rp-body { padding: 16px 20px 32px; display: grid; gap: 10px; align-content: start; }
+  .rp-body > .msg + .msg { margin-top: 0; }
+  .rp-h { margin: 14px 0 2px; font-size: 13px; font-weight: 500; color: var(--ink-soft); display: flex; justify-content: space-between; }
+  .rp-h span { font-family: var(--mono); font-weight: 400; color: var(--ink-faint); }
+  .flag-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .flag-btn {
+    appearance: none; width: 100%; display: grid; gap: 4px; padding: 10px 12px; text-align: left; cursor: pointer;
+    border: 1px solid var(--rule); border-radius: 8px; background: var(--bg);
+  }
+  .flag-btn:hover { border-color: var(--rule-strong); }
+  .flag-when { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); }
+  .flag-text { font-size: 13.5px; }
+  .chat { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 10px; }
+  .bubble { max-width: 90%; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 12px 12px 12px 4px; background: var(--bg); justify-self: start; scroll-margin: 120px; }
+  .bubble.is-b { justify-self: end; border-radius: 12px 12px 4px 12px; background: var(--bg-hover); }
+  .bubble.has-viol { border-color: var(--error); }
+  .bubble.is-focus { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .bubble-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-bottom: 4px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); }
+  .bubble-who { font-family: var(--font); font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+  .bubble-text { margin: 0; font-size: 13.5px; line-height: 1.5; }
+  mark { background: var(--error-bg); color: var(--ink); padding: 0 2px; border-radius: 2px; box-shadow: inset 0 -2px 0 var(--error); }
+  .call-tag { display: inline-block; margin-right: 6px; padding: 0 5px; border: 1px solid var(--rule-strong); border-radius: 4px; font-family: var(--mono); font-size: 11px; color: var(--ink-soft); }
+  .flags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .flag-btn .flags { margin-top: 2px; }
+  .flag { display: inline-flex; align-items: center; gap: 4px; height: 21px; padding: 0 7px; border-radius: 4px; font-size: 11.5px; font-weight: 500; white-space: nowrap; }
+  .flag svg { width: 12px; height: 12px; }
+  .flag.is-viol { background: var(--error-bg); color: var(--error); }
+  .flag.is-anom { background: var(--warning-bg); color: var(--warning); }
+
+  @media (max-width: 1100px) { .rel-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 900px) {
+    .rel-modal { width: 100vw; height: 100dvh; max-height: 100dvh; border: 0; border-radius: 0; }
+    .rel-head { flex-wrap: wrap; padding: 14px 16px; }
+    .rel-head-actions { width: 100%; justify-content: space-between; }
+    .rel-body { display: block; overflow-y: auto; }
+    .rel-main { overflow: visible; padding: 18px 16px 32px; }
+    .rel-panel { overflow: visible; border-left: 0; border-top: 1px solid var(--rule); }
+    .rp-head { position: static; }
+    .flow { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    .flow-arrows { order: 2; } .flow-node:last-child { order: 3; }
+    #relClose { position: absolute; top: 12px; right: 12px; }
+  }
+  @media (forced-colors: active) {
+    .flow-line .shaft { background: CanvasText; }
+    .day-bar .bar { fill: CanvasText; }
+    mark { forced-color-adjust: none; background: Mark; color: MarkText; }
+  }
+
   /* ---------- Responsive ---------- */
   @media (max-width: 1100px) {
     .explorer-grid { grid-template-columns: minmax(0, 1fr); }
@@ -547,6 +711,7 @@
 
 <svg class="mono-defs" aria-hidden="true" focusable="false"><defs>
   <pattern id="kg-diag" patternUnits="userSpaceOnUse" width="5" height="5"><rect width="5" height="5" style="fill:var(--bg)"/><path d="M-1 1 L1 -1 M0 5 L5 0 M4 6 L6 4" stroke="currentColor" stroke-width="1.4"/></pattern>
+  <pattern id="kg-warn" patternUnits="userSpaceOnUse" width="5" height="5"><rect width="5" height="5" style="fill:var(--warning-bg)"/><path d="M-1 1 L1 -1 M0 5 L5 0 M4 6 L6 4" style="stroke:var(--warning)" stroke-width="1.3"/></pattern>
   <pattern id="kg-dots" patternUnits="userSpaceOnUse" width="4.5" height="4.5"><rect width="4.5" height="4.5" style="fill:var(--bg)"/><circle cx="2.25" cy="2.25" r="1.05" fill="currentColor"/></pattern>
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 22 20.5H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.5" r="1.2" fill="currentColor"/></symbol>
   <symbol id="i-stop" viewBox="0 0 24 24"><path d="M8.2 2.5h7.6l5.7 5.7v7.6l-5.7 5.7H8.2l-5.7-5.7V8.2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 7.5v5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.2" fill="currentColor"/></symbol>
@@ -640,6 +805,8 @@
       <div><dt>Every view has a table and a summary</dt><dd>The same data is a keyboard-navigable graph, a relationships table, and a written summary, so people who read differently get the same answer.</dd></div>
       <div><dt>Center on anyone</dt><dd>Start from a person, an account or a trade, and the graph rebuilds around them, nearest connections first, up to the limit you set.</dd></div>
       <div><dt>Signals you can explain</dt><dd>Every flag says what tripped it, by how much, and which messages sit behind it. No black-box scores.</dd></div>
+      <div><dt>Arrows show who’s talking</dt><dd>Every line has an arrowhead at each end, sized by how many messages went that way. A one-sided relationship has a single arrow.</dd></div>
+      <div><dt>A timeline behind every line</dt><dd>Select a relationship to see daily volume against its own mean and standard deviation, when messages were sent, which days and messages fall outside the band, and the conversation itself with policy flags highlighted.</dd></div>
     </dl>
   </section>
 
@@ -725,7 +892,7 @@
         <div class="hears">
           <div class="hears-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>Screen reader hears</div>
           <div class="hears-text" id="hears" role="status" aria-live="polite"></div>
-          <div class="hears-help" id="graphHelp">In the graph: arrow keys move between resources, <kbd>Enter</kbd> selects, <kbd>N</kbd> steps through connections, <kbd>C</kbd> centers, <kbd>Esc</kbd> clears.</div>
+          <div class="hears-help" id="graphHelp">In the graph: arrow keys move between resources, <kbd>Enter</kbd> selects, <kbd>N</kbd> steps through connections, <kbd>C</kbd> centers, <kbd>E</kbd> opens the timeline, <kbd>Esc</kbd> clears. Select a line to open its timeline.</div>
         </div>
       </div>
 
@@ -855,6 +1022,7 @@
         <tr><th scope="row"><kbd>Enter</kbd> or <kbd>Space</kbd></th><td>Select the focused resource; details open alongside.</td></tr>
         <tr><th scope="row"><kbd>N</kbd> · <kbd>Shift</kbd> <kbd>N</kbd></th><td>Next or previous connection of the focused resource, busiest first.</td></tr>
         <tr><th scope="row"><kbd>C</kbd></th><td>Center the graph on the focused resource.</td></tr>
+        <tr><th scope="row"><kbd>E</kbd></th><td>Open the timeline for the relationship between the selected and focused resources, or the focused resource’s busiest one.</td></tr>
         <tr><th scope="row"><kbd>Home</kbd></th><td>Jump to the highest-ranked resource.</td></tr>
         <tr><th scope="row"><kbd>+</kbd> · <kbd>−</kbd> · <kbd>0</kbd></th><td>Zoom in, zoom out, fit.</td></tr>
         <tr><th scope="row"><kbd>Esc</kbd></th><td>Clear the selection.</td></tr>
@@ -879,6 +1047,34 @@
 </section>
 
 </main>
+
+<dialog class="rel-modal" id="relModal" aria-labelledby="relTitle" aria-describedby="relSub">
+  <div class="rel-shell">
+    <header class="rel-head">
+      <div class="rel-head-main">
+        <p class="insp-kicker" id="relKicker">Relationship</p>
+        <h2 class="rel-title" id="relTitle" tabindex="-1"></h2>
+        <p class="rel-sub" id="relSub"></p>
+      </div>
+      <div class="rel-head-actions">
+        <div class="field rel-k">
+          <span class="group-label" id="kLabel">Anomaly threshold</span>
+          <div class="segmented" role="group" aria-labelledby="kLabel">
+            <button type="button" data-k="1" aria-pressed="false" aria-label="1 standard deviation">1σ</button>
+            <button type="button" data-k="2" aria-pressed="true" aria-label="2 standard deviations">2σ</button>
+            <button type="button" data-k="3" aria-pressed="false" aria-label="3 standard deviations">3σ</button>
+          </div>
+        </div>
+        <button class="icon-button" type="button" id="relClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+    </header>
+    <div class="rel-body">
+      <div class="rel-main" id="relMain"></div>
+      <aside class="rel-panel" id="relPanel" aria-label="Conversation"></aside>
+    </div>
+    <div class="sr-only" id="relLive" role="status" aria-live="polite"></div>
+  </div>
+</dialog>
 
 <script>
 (() => {
@@ -1005,19 +1201,20 @@ function S(a, b, chs, opts = {}) {
   real.channels = {};
   for (const [ch, [cur, prev]] of Object.entries(chs)) real.channels[ch] = { cur, prev };
   Object.assign(real, opts);
+  if (opts.out != null) real.dir = real.a === ida ? opts.out : 1 - opts.out;
   return real;
 }
-S("marcus", "x:jack", { Bloomberg: [34, 26], Voice: [6, 4] }, { thread: "nvsm", sentiment: .3 });
-S("marcus", "priya", { WhatsApp: [41, 6], Teams: [3, 2] }, { thread: "nvsm", sentiment: -.1 });
+S("marcus", "x:jack", { Bloomberg: [34, 26], Voice: [6, 4] }, { thread: "nvsm", sentiment: .3, out: .45, burst: [["2026-10-05", .3, 480, 700, "Bloomberg"]], lines: ["Any axes on NVSM?", "Working it.", "Let me see where research is landing.", "Done."] });
+S("marcus", "priya", { WhatsApp: [41, 6], Teams: [3, 2] }, { thread: "nvsm", sentiment: -.1, out: .6, burst: [["2026-10-05", .42, 470, 620, "WhatsApp"], ["2026-10-06", .22, 1230, 1400, "WhatsApp"]], lines: ["Any update on the note?", "Call me when you’re out.", "Is it still this week?", "Delete this after you read it.", "Thanks. Keep this between us."] });
 S("marcus", "ruth", { Email: [12, 10], Teams: [6, 7] }, { thread: "nvsm", files: 2, sentiment: .1 });
-S("lin", "x:zhang", { WeChat: [28, 9], Email: [5, 4] }, { thread: "osprey", translated: true, sentiment: .4 });
+S("lin", "x:zhang", { WeChat: [28, 9], Email: [5, 4] }, { thread: "osprey", translated: true, sentiment: .4, out: .35, burst: [["2026-10-20", .4, 540, 660, "WeChat"], ["2026-10-21", .18, 1290, 1420, "WeChat"]], lines: ["Can you make sure we’re looked after?", "Received, thanks.", "Let’s keep this here.", "I’ll talk to the desk."] });
 S("lin", "x:wuling", { WeChat: [9, 8], Email: [4, 5] }, { translated: true, sentiment: .2 });
-S("lin", "zoe", { Teams: [22, 18], Email: [3, 4] }, { thread: "osprey", sentiment: .2 });
-S("tom", "x:henry", { Bloomberg: [52, 11], Voice: [9, 3] }, { thread: "rates", sentiment: .5 });
-S("mei", "leila", { Teams: [8, 2] }, { approved: true, sentiment: .1 });
-S("grace", "x:ashby", { SMS: [22, 3], Voice: [4, 4], Email: [6, 5] }, { sentiment: .3 });
+S("lin", "zoe", { Teams: [22, 18], Email: [3, 4] }, { thread: "osprey", sentiment: .2, out: .7 });
+S("tom", "x:henry", { Bloomberg: [52, 11], Voice: [9, 3] }, { thread: "rates", sentiment: .5, out: .3, burst: [["2026-10-22", .35, 920, 962, "Bloomberg"]], lines: ["Where are you marking 10s?", "Keep it tight into the fix.", "Done.", "We’re square."] });
+S("mei", "leila", { Teams: [8, 2] }, { approved: true, sentiment: .1, out: .5 });
+S("grace", "x:ashby", { SMS: [22, 3], Voice: [4, 4], Email: [6, 5] }, { sentiment: .3, out: .4, burst: [["2026-10-15", .55, 1230, 1385, "SMS"]], lines: ["Can you move it before the statement date?", "Don’t mention this to compliance.", "Text me, not email.", "Ok, done."] });
 S("grace", "x:diane", { WhatsApp: [11, 9], Email: [5, 6] }, { sentiment: .5 });
-S("felix", "x:kate", { WhatsApp: [5, 0] }, { thread: "press", sentiment: .1 });
+S("felix", "x:kate", { WhatsApp: [5, 0] }, { thread: "press", sentiment: .1, out: .4, burst: [["2026-10-23", 1, 1265, 1330, "WhatsApp"]], lines: ["Off the record?", "Hearing a lot about your desk.", "Coffee Monday."] });
 
 for (const e of PERSON_EDGE.values()) {
   for (const ch of UNCAPTURABLE) {
@@ -1075,6 +1272,7 @@ for (const e of [...PERSON_EDGE.values()]) {
 /* A WhatsApp number nobody owns, talking to Marcus's personal WhatsApp. Only visible when you look at accounts. */
 const UNKNOWN = addNode({ id: "a:WhatsApp:unknown", type: "account", channel: "WhatsApp", owner: null, handle: "+852 5550 0193", label: "WhatsApp +852 5550 0193", short: "+852 5550 0193", registered: null, group: "Unattributed", sub: "WhatsApp · no known owner" });
 const unknownEdge = addEdge({ id: "c:unknown", kind: "comm", level: "account", a: "a:WhatsApp:e-marcus", b: UNKNOWN.id, channels: { WhatsApp: { cur: 17, prev: 0 } }, unmon: new Set(["WhatsApp"]), files: 0, sentiment: 0, translated: false, thread: null, derived: [] });
+Object.assign(unknownEdge, { dir: 0, burst: [["2026-10-06", .35, 1290, 1425], ["2026-10-13", .25, 1300, 1420]], lines: ["Did you get it?", "Delete after reading.", "Need an answer before the open.", "Call this number."] });
 
 /* Trades */
 const TRADES = [
@@ -1190,6 +1388,137 @@ for (const s of SIGNALS) {
 const sevRank = s => s.sev === "high" ? 0 : 1;
 
 /* ======================================================================
+   Messages. Every relationship gets timestamped, directional messages for
+   the 30-day window (Wed 30 Sep to Thu 29 Oct 2026), seeded by its id so
+   the timeline, standard-deviation bands and conversation panel are stable.
+   ====================================================================== */
+const DAY0 = Date.UTC(2026, 8, 30), DAYS = 30, DAY_MS = 864e5;
+const WDN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const dayDate = d => new Date(DAY0 + d * DAY_MS);
+const fmtDay = d => { const t = dayDate(d); return `${WDN[t.getUTCDay()]} ${t.getUTCDate()} ${MON[t.getUTCMonth()]}`; };
+const fmtShort = d => { const t = dayDate(d); return `${t.getUTCDate()} ${MON[t.getUTCMonth()]}`; };
+const fmtTime = x => { const m = Math.max(0, Math.min(1439, Math.round(x))); return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`; };
+const dayOf = iso => Math.round((Date.parse(iso + "T00:00:00Z") - DAY0) / DAY_MS);
+const isWeekend = d => { const w = dayDate(d).getUTCDay(); return w === 0 || w === 6; };
+
+/* Pin each thread to a real week in the window. */
+const THREAD_WEEK = { nvsm: "2026-10-05", osprey: "2026-10-19", rates: "2026-10-19", press: "2026-10-19" };
+const WD_OFF = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
+for (const [tid, th] of Object.entries(THREADS)) for (const s of th.steps) {
+  const [w, hm] = s.t.split(" "); const [h, mi] = hm.split(":").map(Number);
+  s.day = dayOf(THREAD_WEEK[tid]) + WD_OFF[w]; s.min = h * 60 + mi; s.thread = tid;
+}
+
+const LINES = {
+  internal: ["Can you check the breaks on yesterday’s fills?", "Pushing the recon to 4pm.", "Thanks, got it.", "Is the client deck final?", "Joining the 2pm in a sec.", "Fixed, rerunning now.", "Who’s covering the desk tomorrow?", "Numbers look right to me.", "Sending the updated file.", "Can you take the 11:30?", "Approved, go ahead.", "Morning. Anything overnight?"],
+  Email: ["Attached is the weekly summary.", "Following up on the settlement instructions.", "Please find the term sheet attached.", "Confirming our call for Thursday.", "Minutes from this morning are attached.", "Revised pricing attached, let me know.", "Thanks for the time today.", "Could you resend the signed copy?"],
+  Bloomberg: ["Axes for today?", "Can show you 50k at the mid.", "Any color on the open?", "Working an order, will revert.", "Done, thanks.", "Where do you see it closing?", "Still a buyer?", "Lifting your offer.", "Can you improve?"],
+  SMS: ["Running 5 late.", "Call me when you can.", "Saw the statement, thanks.", "Can we talk tonight?", "All good, speak tomorrow.", "Landed, will call after."],
+  WhatsApp: ["You around?", "Call me.", "Sent you a voice note.", "Talk later.", "Let’s catch up tomorrow.", "Ok.", "Will do."],
+  WeChat: ["Thanks for the update.", "Let’s discuss tomorrow.", "Received.", "Will confirm with the team.", "Please send the latest version."],
+};
+const SECRET_LINES = ["Let’s take this offline.", "Call my cell, not the desk line.", "Keep this between us for now.", "Can’t put that in an email.", "Delete this after you read it."];
+const PERSONAL = new Set(["WhatsApp", "WeChat", "SMS"]);
+const gauss = rnd => { let u = 0; while (!u) u = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rnd()); };
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const endOf = id => NODES.get(id)?.owner || id;
+const pick = (rnd, arr) => arr[Math.floor(rnd() * arr.length)];
+function lineFor(ch, rnd) {
+  if (ch === "Voice") return { text: `Recorded line, ${1 + Math.floor(rnd() * 9)} minutes.`, call: true };
+  if (ch === "Zoom") return { text: `Video meeting, ${15 + Math.floor(rnd() * 4) * 15} minutes.`, call: true };
+  return { text: pick(rnd, LINES[ch] || LINES.internal) };
+}
+
+function genMessages(e) {
+  const rnd = mulberry(Math.floor(hash(e.id + ":m") * 2147483647));
+  const A = endOf(e.a), B = endOf(e.b);
+  const dir = e.dir ?? (hash(e.id + "d") < .06 ? (hash(e.id + "o") < .5 ? 1 : 0) : .3 + hash(e.id + "r") * .4);
+  const flagged = (SIG_BY_EDGE.get(e.id) || []).length > 0;
+  const scripted = [];
+  for (const th of Object.values(THREADS)) for (const s of th.steps) if (!s.system && pairKey(s.from, s.to) === pairKey(A, B)) scripted.push(s);
+  const out = [];
+  for (const [ch, v] of Object.entries(e.channels)) {
+    const mine = scripted.filter(s => s.ch === ch);
+    for (const s of mine) out.push({ day: s.day, min: s.min, ch, from: s.from, to: s.to, text: s.text, call: !!s.call, tr: s.tr, thread: s.thread });
+    const total = Math.max(0, v.cur - mine.length);
+    let left = total;
+    const personal = PERSONAL.has(ch);
+    const push = (day, min, burst) => {
+      const ab = rnd() < dir;
+      let L;
+      if (burst && e.lines && rnd() < .55) L = { text: pick(rnd, e.lines) };
+      else if (burst && flagged && personal && rnd() < .2) L = { text: pick(rnd, SECRET_LINES) };
+      else L = lineFor(ch, rnd);
+      out.push({ day, min: Math.round(clamp(min, 0, 1439)), ch, from: ab ? A : B, to: ab ? B : A, ...L, tr: ch === "WeChat" && e.translated ? "Mandarin" : undefined });
+    };
+    for (const [iso, share, m0, m1, bch] of e.burst || []) {
+      if (bch && bch !== ch) continue;
+      const n = Math.min(left, Math.round(total * share));
+      for (let i = 0; i < n; i++) push(dayOf(iso), m0 + rnd() * (m1 - m0), true);
+      left -= n;
+    }
+    const spike = v.prev > 0 && v.cur >= 2.5 * v.prev, fresh = v.prev === 0;
+    const cum = []; let sum = 0;
+    for (let d = 0; d < DAYS; d++) {
+      let x = isWeekend(d) ? (personal ? .45 : .1) : 1;
+      if (spike) x *= .25 + 2.5 * (d / 29) ** 2;
+      if (fresh && d < 18) x *= .04;
+      cum.push(sum += x);
+    }
+    for (let i = 0; i < left; i++) {
+      const r = rnd() * sum; let d = 0; while (cum[d] < r) d++;
+      let min;
+      if (personal) min = clamp(14 * 60 + gauss(rnd) * 200, 6.5 * 60, 23.5 * 60);
+      else if (rnd() < .025) min = 19.5 * 60 + rnd() * 120;
+      else min = clamp(11.5 * 60 + gauss(rnd) * 125, 7 * 60, 19.5 * 60);
+      push(d, min, false);
+    }
+  }
+  return out.sort((a, b) => a.day - b.day || a.min - b.min);
+}
+const MSG = new Map();
+function rawMessages(e) {
+  if (e.derivedFrom) { const parent = EDGE.get(e.derivedFrom); return rawMessages(parent).filter(m => e.channels[m.ch]); }
+  if (!MSG.has(e.id)) MSG.set(e.id, genMessages(e));
+  return MSG.get(e.id);
+}
+const personEdgeOf = e => e.derivedFrom ? EDGE.get(e.derivedFrom) : e;
+
+/* ---------------- Policies ---------------- */
+const POLICY = {
+  barrier: { name: "Information barrier", desc: "Research and trading in contact without an approved wall-crossing." },
+  offchannel: { name: "Off-channel communication", desc: "Business discussed on a channel that isn’t captured for this employee." },
+  secrecy: { name: "Secrecy or evasion language", desc: "Wording that moves the conversation off the record or hides it." },
+  mnpi: { name: "Possible inside information", desc: "Reference to unpublished research or a deal before it’s public." },
+  manip: { name: "Possible collusion or favor", desc: "Wording that suggests coordinated prices or something given in return." },
+};
+const LEXICON = {
+  secrecy: ["can’t say here", "not on here", "keep this here", "delete this", "delete after reading", "take this offline", "between us", "not the desk line", "can’t put that in", "don’t mention", "off the record", "text me, not email"],
+  mnpi: ["note going out", "where research is landing", "update on the note", "ahead of the note"],
+  manip: ["keep it tight into the fix", "we’re square", "more than the summary", "looked after", "bump osprey"],
+};
+const normq = s => s.toLowerCase().replace(/'/g, "’");
+const isEmp = id => NODES.get(id)?.type === "employee";
+const msgUnmon = m => UNCAPTURABLE.has(m.ch) && [m.from, m.to].some(id => isEmp(id) && !(m.ch === "WhatsApp" && REGISTERED_WA.has(id)));
+function msgFlags(m) {
+  if (m._f) return m._f;
+  const f = [];
+  if (msgUnmon(m)) f.push({ id: "offchannel" });
+  const t = normq(m.text);
+  for (const [pid, words] of Object.entries(LEXICON)) for (const w of words) if (t.includes(w)) f.push({ id: pid, phrase: w });
+  return (m._f = f);
+}
+function markText(text, flags) {
+  const t = normq(text), ranges = [];
+  for (const f of flags) if (f.phrase) { const i = t.indexOf(f.phrase); if (i >= 0) ranges.push([i, i + f.phrase.length]); }
+  ranges.sort((a, b) => a[0] - b[0]);
+  let out = "", at = 0;
+  for (const [s, e] of ranges) { if (s < at) continue; out += esc(text.slice(at, s)) + `<mark>${esc(text.slice(s, e))}</mark>`; at = e; }
+  return out + esc(text.slice(at));
+}
+
+/* ======================================================================
    Shapes
    ====================================================================== */
 function shapeSVG(type, r) {
@@ -1276,6 +1605,12 @@ function computeView() {
     adj.get(v.e.a).push({ v, other: v.e.b }); adj.get(v.e.b).push({ v, other: v.e.a });
     const w = v.structural ? 1.5 : Math.sqrt(v.cur);
     wdeg.set(v.e.a, wdeg.get(v.e.a) + w); wdeg.set(v.e.b, wdeg.get(v.e.b) + w);
+  }
+  for (const v of edges) {
+    if (v.structural) { v.ab = 1; v.ba = 0; continue; }
+    const A = endOf(v.e.a); let ab = 0, ba = 0;
+    for (const m of rawMessages(v.e)) if (state.channels.has(m.ch)) { if (m.from === A) ab++; else ba++; }
+    v.ab = ab; v.ba = ba;
   }
   for (const list of adj.values()) list.sort((x, y) => (y.v.cur - x.v.cur) || name(x.other).localeCompare(name(y.other)));
   const edgeIds = new Set(edges.map(v => v.e.id));
@@ -1495,7 +1830,11 @@ function renderGraph() {
     const cross = state.group === "team" && NODES.get(v.e.a).group !== NODES.get(v.e.b).group;
     const cls = ["edge", cross ? "is-cross" : "", v.structural ? "is-structural" : "", v.unmon ? "is-unmonitored" : "", edgeSignals(v.e.id).length ? "is-signal" : ""].join(" ");
     const w = edgeWidth(v);
-    return `<g class="${cls}" data-id="${esc(v.e.id)}"><line class="edge-halo" style="stroke-width:${w + 5}px"/><line class="edge-line" style="stroke-width:${w}px"/><line class="edge-hit"/>${edgeSignals(v.e.id).length && !v.structural ? `<path class="edge-mark" d="M0 -5 L5 0 L0 5 L-5 0Z"/>` : ""}</g>`;
+    const tot = v.ab + v.ba || 1;
+    const head = n => { if (!n) return null; const L = v.structural ? 6.5 : 4.5 + w * 1.1 + 8 * n / tot, H = L * .42; return `M0 0 L${(-L).toFixed(1)} ${(-H).toFixed(1)} L${(-L * .72).toFixed(1)} 0 L${(-L).toFixed(1)} ${H.toFixed(1)}Z`; };
+    const hb = head(v.ab), ha = head(v.ba);
+    const tip = v.structural ? `${name(v.e.a)} ${STRUCT_REL[v.e.kind].toLowerCase()} ${name(v.e.b)}` : `${name(endOf(v.e.a))} → ${name(endOf(v.e.b))}: ${v.ab} · ${name(endOf(v.e.b))} → ${name(endOf(v.e.a))}: ${v.ba}. Click for the timeline.`;
+    return `<g class="${cls}" data-id="${esc(v.e.id)}"><title>${esc(tip)}</title><line class="edge-halo" style="stroke-width:${w + 5}px"/><line class="edge-line" style="stroke-width:${w}px"/><line class="edge-hit"/>${edgeSignals(v.e.id).length && !v.structural ? `<path class="edge-mark" d="M0 -5 L5 0 L0 5 L-5 0Z"/>` : ""}${hb ? `<path class="edge-arrow" data-end="b" d="${hb}"/>` : ""}${ha ? `<path class="edge-arrow" data-end="a" d="${ha}"/>` : ""}</g>`;
   }).join("");
   nodesG.innerHTML = VIEW.nodes.map(n => {
     const r = radius(n.id);
@@ -1516,14 +1855,23 @@ function renderGraph() {
   renderLegend();
 }
 
-function place(pos) {
-  for (const [id, el] of nodeEls) { const p = pos.get(id); if (p) el.setAttribute("transform", `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`); }
+function place(pos, scales) {
+  for (const [id, el] of nodeEls) { const p = pos.get(id); if (p) el.setAttribute("transform", `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})${scales ? ` scale(${scales.get(id).toFixed(3)})` : ""}`); }
   for (const v of VIEW.edges) {
     const el = edgeEls.get(v.e.id); if (!el) continue;
     const a = pos.get(v.e.a), b = pos.get(v.e.b); if (!a || !b) continue;
     for (const ln of el.querySelectorAll("line")) { ln.setAttribute("x1", a.x); ln.setAttribute("y1", a.y); ln.setAttribute("x2", b.x); ln.setAttribute("y2", b.y); }
     const mk = el.querySelector(".edge-mark");
     if (mk) mk.setAttribute("transform", `translate(${((a.x + b.x) / 2).toFixed(1)} ${((a.y + b.y) / 2).toFixed(1)})`);
+    for (const ar of el.querySelectorAll(".edge-arrow")) {
+      const toB = ar.dataset.end === "b", P = toB ? b : a, Q = toB ? a : b;
+      const dx = P.x - Q.x, dy = P.y - Q.y, d = Math.hypot(dx, dy) || 1;
+      const sc = scales ? scales.get(toB ? v.e.b : v.e.a) : 1;
+      const r = radius(toB ? v.e.b : v.e.a) * sc + 3;
+      if (d < radius(v.e.a) + radius(v.e.b) + 14) { ar.setAttribute("visibility", "hidden"); continue; }
+      ar.removeAttribute("visibility");
+      ar.setAttribute("transform", `translate(${(P.x - dx / d * r).toFixed(1)} ${(P.y - dy / d * r).toFixed(1)}) rotate(${(Math.atan2(dy, dx) * 180 / Math.PI).toFixed(1)})`);
+    }
   }
   if (state.group === "team") drawHulls(pos); else hullsG.innerHTML = "";
 }
@@ -1566,6 +1914,34 @@ function animateTo() {
     if (t < 1) anim = requestAnimationFrame(step); else { anim = null; done(); }
   };
   anim = requestAnimationFrame(step);
+}
+
+/* First load: nodes bubble out from the middle, overshoot, wobble and settle. */
+function animateIntro() {
+  if (anim) cancelAnimationFrame(anim);
+  const done = () => { edgesG.style.opacity = ""; hullsG.style.opacity = ""; CUR.clear(); for (const [id, p] of POS) CUR.set(id, { ...p }); place(CUR); };
+  if (reduceMotion.matches || !VIEW.nodes.length) return done();
+  const order = new Map(VIEW.rank.map((n, i) => [n.id, i]));
+  const start = new Map();
+  for (const n of VIEW.nodes) { const a = hash(n.id + "i") * Math.PI * 2, r = 10 + hash(n.id + "q") * 70; start.set(n.id, { x: W / 2 + Math.cos(a) * r, y: H / 2 + Math.sin(a) * r }); }
+  const elastic = t => t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -8 * t) * Math.sin((t * 8 - .75) * (2 * Math.PI / 3)) + 1;
+  const back = t => { const c = 2.2; return t <= 0 ? 0 : t >= 1 ? 1 : 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+  const dur = 1700, stagger = Math.min(16, 700 / VIEW.nodes.length), total = dur + stagger * VIEW.nodes.length;
+  const t0 = performance.now();
+  const step = now => {
+    const m = new Map(), sc = new Map();
+    for (const [id, p] of POS) {
+      const t = Math.min(1, Math.max(0, (now - t0 - (order.get(id) || 0) * stagger) / dur));
+      const f = start.get(id) || p, e = elastic(t);
+      m.set(id, { x: f.x + (p.x - f.x) * e, y: f.y + (p.y - f.y) * e });
+      sc.set(id, Math.max(.001, back(Math.min(1, t * 2.4))));
+    }
+    const g = Math.min(1, Math.max(0, (now - t0 - 450) / 800));
+    edgesG.style.opacity = g; hullsG.style.opacity = g;
+    place(m, sc);
+    if (now - t0 < total) anim = requestAnimationFrame(step); else { anim = null; done(); }
+  };
+  step(t0);
 }
 
 function relatedSets() {
@@ -1629,6 +2005,7 @@ function renderLegend() {
     `<li>${line("")}Captured channel</li>` +
     `<li>${line("6 5", 2, "butt")}Some traffic not captured</li>` +
     `<li>${line(".1 4.5", 1.8)}Owns, uses, or traded</li>` +
+    `<li><svg class="line-swatch" viewBox="0 0 28 10" aria-hidden="true"><line x1="6" y1="5" x2="22" y2="5" stroke="currentColor" stroke-width="1.6"/><path d="M27 5 L17 1 L19.5 5 L17 9Z M1 5 L7 2.6 L5.6 5 L7 7.4Z" fill="currentColor"/></svg>Bigger arrow, more messages that way</li>` +
     `<li><svg viewBox="-10 -10 20 20" aria-hidden="true"><circle r="4" fill="currentColor"/><circle r="7.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 2.5"/></svg>Has a signal</li>`;
 }
 
@@ -1650,7 +2027,7 @@ function renderTable() {
         <td><span class="tags">${v.structural ? "<span class='tag'>—</span>" : v.chans.map(ch => `<span class="tag${v.e.unmon.has(ch) ? " is-unmon" : ""}">${ch} ${v.e.channels[ch].cur}${v.e.unmon.has(ch) ? " · not captured" : ""}</span>`).join("")}</span></td>
         <td class="num">${v.structural ? "—" : v.cur}</td><td class="num">${v.structural ? "—" : pct(v.cur, v.prev)}</td>
         <td><span class="tags">${sig.length ? sig.map(s => `<span class="tag is-${s.sev}">${esc(s.title)}</span>`).join("") : "<span class='sr-only'>None</span>"}</span></td>
-        <td><button class="conn-detail" type="button" data-edge="${esc(v.e.id)}" aria-label="Details for ${esc(name(v.e.a))} and ${esc(name(v.e.b))}">${ICON.detail}</button></td></tr>`;
+        <td><button class="conn-detail" type="button" ${v.structural ? `data-edge="${esc(v.e.id)}"` : `data-rel="${esc(v.e.id)}"`} aria-label="Timeline for ${esc(name(v.e.a))} and ${esc(name(v.e.b))}">${ICON.detail}</button></td></tr>`;
     }).join("")}</tbody></table>`;
   applyHighlight();
 }
@@ -1761,7 +2138,7 @@ function edgeInspector(e) {
       <h2 class="insp-title" id="inspTitle" tabindex="-1">${esc(name(e.a))} and ${esc(name(e.b))}</h2>
       <div class="endpoints" style="margin-top:12px">${nodeLink(e.a)}<span class="sep">↔</span>${nodeLink(e.b)}</div>
       <dl class="stats"><div><dt>30 days</dt><dd>${v.cur}</dd></div><div><dt>Prior 30</dt><dd>${v.prev}</dd></div><div><dt>Change</dt><dd>${pct(v.cur, v.prev)}</dd></div></dl>
-      <div class="insp-actions"><button class="btn-sm" type="button" data-clear>Clear selection</button></div>
+      <div class="insp-actions"><button class="btn-sm" type="button" data-rel="${esc(e.id)}">${ICON.detail}Open timeline</button><button class="btn-sm" type="button" data-clear>Clear selection</button></div>
     </section>
     ${sigs.length || extra.length ? `<section class="insp-section">${extra.join("")}${sigs.map(msgHTML).join("")}</section>` : ""}
     <section class="insp-section"><h3 class="insp-h">Channels <span>30 days</span></h3>${barsHTML(rows)}
@@ -1779,7 +2156,7 @@ function threadHTML(th, e) {
       const here = s.system || (pair.has(s.from) && pair.has(s.to));
       const un = stepUnmon(s);
       return `<li class="${s.system ? "is-system" : ""}${un ? " is-unmon" : ""}${here ? "" : " is-dim"}">
-        <div class="thread-meta"><span>${esc(s.t)}</span><span class="tag${un ? " is-unmon" : ""}">${esc(s.ch)}${un ? " · not captured" : ""}</span>${s.tr ? `<span class="tag">Translated from ${esc(s.tr)}</span>` : ""}</div>
+        <div class="thread-meta"><span>${fmtDay(s.day)} ${esc(s.t.split(" ")[1])}</span><span class="tag${un ? " is-unmon" : ""}">${esc(s.ch)}${un ? " · not captured" : ""}</span>${s.tr ? `<span class="tag">Translated from ${esc(s.tr)}</span>` : ""}</div>
         ${s.system ? "" : `<p class="thread-who">${esc(name(s.from))} → ${esc(name(s.to))}</p>`}
         <p class="thread-text">${esc(s.text)}</p></li>`;
     }).join("")}</ol>
@@ -1793,7 +2170,7 @@ function signalInspector(s) {
   return `<section class="insp-section"><p class="insp-kicker">Signal · ${sevWord(s.sev)} severity</p>
       <h2 class="insp-title" id="inspTitle" tabindex="-1">${esc(s.title)}</h2>
       <div style="margin-top:12px">${msgHTML(s)}</div>
-      <div class="insp-actions">${primary ? `<button class="btn-sm" type="button" data-edge="${esc(primary.id)}">${ICON.detail}Open relationship</button>` : ""}<button class="btn-sm" type="button" data-clear>Clear selection</button></div>
+      <div class="insp-actions">${primary ? `<button class="btn-sm" type="button" data-rel="${esc(primary.id)}">${ICON.detail}Open timeline</button>` : ""}<button class="btn-sm" type="button" data-clear>Clear selection</button></div>
     </section>
     <section class="insp-section"><h3 class="insp-h">Involved in view <span>${nodes.length}</span></h3><ul class="conn-list">${nodes.map(id => connRow(id, null)).join("")}</ul></section>
     ${s.thread ? threadHTML(THREADS[s.thread], primary) : ""}`;
@@ -1856,7 +2233,7 @@ function renderStatus() {
    Update cycle
    ====================================================================== */
 let explorerReady = false;
-function update({ relayout = true, say = true } = {}) {
+function update({ relayout = true, say = true, intro = false } = {}) {
   computeView();
   if (state.sel) {
     const s = state.sel;
@@ -1869,7 +2246,7 @@ function update({ relayout = true, say = true } = {}) {
   for (const n of VIEW.nodes) if (!CUR.has(n.id)) { const p = POS.get(n.id); const nb = VIEW.adj.get(n.id)[0]; const q = nb && CUR.get(nb.other); CUR.set(n.id, q ? { ...q } : { ...p }); }
   for (const id of [...CUR.keys()]) if (!VIEW.nodeIds.has(id)) CUR.delete(id);
   place(CUR);
-  animateTo();
+  if (intro) animateIntro(); else animateTo();
   renderStatus(); renderSignals(); renderInspector(false); renderTable(); renderSummary(); renderControls();
   if (say) announce(statusText());
 }
@@ -1963,13 +2340,14 @@ document.querySelector(".segmented").addEventListener("click", ev => {
   keepFocus(`[data-group="${state.group}"]`);
   announce(state.group === "team" ? "Grouped by team or firm." : "Grouping off.");
 });
-$("resetButton").addEventListener("click", () => { state = DEFAULTS(); POS.clear(); CUR.clear(); resetZoom(); update(); announce("View reset. " + statusText()); });
+$("resetButton").addEventListener("click", () => { state = DEFAULTS(); POS.clear(); CUR.clear(); resetZoom(); update({ intro: true }); announce("View reset. " + statusText()); });
 $("labelsButton").addEventListener("click", () => { state.labels = !state.labels; renderControls(); updateLabels(); announce(state.labels ? "All labels shown." : "Labels shown for key resources only."); });
 
 /* Delegated clicks in inspector, table, signals */
 document.addEventListener("click", ev => {
-  const t = ev.target.closest("[data-node],[data-edge],[data-signal],[data-center],[data-uncenter],[data-clear]");
+  const t = ev.target.closest("[data-rel],[data-node],[data-edge],[data-signal],[data-center],[data-uncenter],[data-clear]");
   if (!t || !t.closest("#explorer") || t.closest("#nodes")) return;
+  if (t.dataset.rel) { select({ kind: "edge", id: t.dataset.rel }, { say: false }); return openRel(t.dataset.rel, t); }
   if (t.hasAttribute("data-clear")) return select(null);
   if (t.hasAttribute("data-uncenter")) return centerOn("");
   if (t.dataset.center) return centerOn(t.dataset.center);
@@ -2045,7 +2423,12 @@ svg.addEventListener("click", ev => {
   const node = ev.target.closest(".node");
   if (node) { const id = node.dataset.id; focusId = id; syncRoving(); select(state.sel?.kind === "node" && state.sel.id === id ? null : { kind: "node", id }); return; }
   const edge = ev.target.closest(".edge");
-  if (edge) return select({ kind: "edge", id: edge.dataset.id });
+  if (edge) {
+    const id = edge.dataset.id;
+    if (EDGE.get(id).kind !== "comm") return select({ kind: "edge", id });
+    select({ kind: "edge", id }, { say: false });
+    return openRel(id, null);
+  }
   if (state.sel) select(null);
 });
 svg.addEventListener("dblclick", ev => { const node = ev.target.closest(".node"); if (node) centerOn(node.dataset.id); });
@@ -2111,6 +2494,16 @@ nodesG.addEventListener("keydown", ev => {
     }
     case "c": case "C": ev.preventDefault(); centerOn(id); requestAnimationFrame(() => moveFocus(id, false)); break;
     case "Home": ev.preventDefault(); moveFocus(VIEW.rank[0]?.id); break;
+    case "e": case "E": {
+      ev.preventDefault();
+      const anchor = state.sel?.kind === "node" ? state.sel.id : null;
+      const list = (VIEW.adj.get(id) || []).filter(c => !c.v.structural);
+      const pickC = (anchor && anchor !== id && list.find(c => c.other === anchor)) || list[0];
+      if (!pickC) { announce(`${name(id)} has no conversations in view.`); break; }
+      select({ kind: "edge", id: pickC.v.e.id }, { say: false });
+      openRel(pickC.v.e.id, n);
+      break;
+    }
     case "Escape": if (state.sel) { ev.preventDefault(); select(null); } break;
     case "+": case "=": ev.preventDefault(); zoomAt(1.25); break;
     case "-": case "_": ev.preventDefault(); zoomAt(.8); break;
@@ -2122,6 +2515,320 @@ new ResizeObserver(() => {
   if (!explorerReady || $("explorer").hidden || $("view-graph").hidden) return;
   if (measure()) { renderGraph(); place(CUR); }
 }).observe(frame);
+
+
+/* ======================================================================
+   Relationship modal: flow, daily volume with a σ band, time of day,
+   anomalies, and a conversation panel that highlights policy flags.
+   ====================================================================== */
+const relModal = $("relModal"), relMain = $("relMain"), relPanel = $("relPanel");
+const REL = { id: null, k: 2, day: null, msg: null, opener: null, barFocus: null, msgs: [], S: null, A: null, B: null };
+const relSay = t => { const el = $("relLive"); el.textContent = ""; requestAnimationFrame(() => { el.textContent = t; }); };
+const shortN = id => { const n = NODES.get(id); return n && (n.type === "employee" || n.type === "external") ? n.label.split(" ")[0] : (n?.short || id); };
+const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+const niceStep = top => [1, 2, 5, 10, 20, 25, 50, 100].find(s => top / s <= 5) || 100;
+
+function relStats(msgs, k) {
+  const c = new Array(DAYS).fill(0);
+  for (const m of msgs) c[m.day]++;
+  const mu = c.reduce((s, x) => s + x, 0) / DAYS;
+  const sd = Math.sqrt(c.reduce((s, x) => s + (x - mu) ** 2, 0) / DAYS);
+  const enough = msgs.length >= 8;
+  const thresh = mu + k * sd;
+  const dayAnom = c.map(x => enough && sd > 0 && x > thresh && x >= 3);
+  /* Send time uses a robust σ (1.4826 × median absolute deviation) so a burst of late messages can't widen its own baseline. */
+  const med = arr => { const a = [...arr].sort((x, y) => x - y), h = a.length >> 1; return a.length ? (a.length % 2 ? a[h] : (a[h - 1] + a[h]) / 2) : 0; };
+  const tm = med(msgs.map(m => m.min));
+  const tsd = msgs.length ? Math.max(30, 1.4826 * med(msgs.map(m => Math.abs(m.min - tm)))) : 0;
+  const lo = Math.max(0, tm - k * tsd), hi = Math.min(1439, tm + k * tsd);
+  const off = new Set(enough && tsd > 0 ? msgs.filter(m => m.min < lo || m.min > hi) : []);
+  return { c, mu, sd, thresh, dayAnom, tm, tsd, lo, hi, off, enough };
+}
+const zOf = d => REL.S.sd ? (REL.S.c[d] - REL.S.mu) / REL.S.sd : 0;
+
+function openRel(id, opener) {
+  const e = EDGE.get(id);
+  if (!e || e.kind !== "comm") return;
+  Object.assign(REL, { id, day: null, msg: null, barFocus: null, opener: opener || (document.activeElement !== document.body ? document.activeElement : null) });
+  if (!relModal.open) relModal.showModal();
+  document.documentElement.classList.add("modal-open");
+  renderRel();
+  relMain.scrollTop = 0; relPanel.scrollTop = 0;
+  $("relTitle").focus({ preventScroll: true });
+}
+
+function renderRel() {
+  const e = EDGE.get(REL.id), pe = personEdgeOf(e);
+  const A = REL.A = endOf(e.a), B = REL.B = endOf(e.b);
+  const msgs = REL.msgs = rawMessages(e).filter(m => state.channels.has(m.ch));
+  const S = REL.S = relStats(msgs, REL.k);
+  const ab = msgs.filter(m => m.from === A).length, ba = msgs.length - ab;
+  const sigs = [...new Set([...(SIG_BY_EDGE.get(pe.id) || []), ...(SIG_BY_EDGE.get(e.id) || [])])].sort((a, b) => sevRank(a) - sevRank(b));
+  const hiddenCh = Object.keys(e.channels).filter(ch => !state.channels.has(ch));
+  $("relKicker").textContent = e.derivedFrom || e.level !== "person" ? `Relationship · ${NODES.get(e.a).label} ↔ ${NODES.get(e.b).label}` : "Relationship";
+  $("relTitle").textContent = `${name(A)} and ${name(B)}`;
+  $("relSub").textContent = `${plural(msgs.length, "message")} on ${Object.keys(e.channels).filter(ch => state.channels.has(ch)).join(", ") || "no channels"} · 30 Sep to 29 Oct 2026${hiddenCh.length ? ` · ${hiddenCh.join(", ")} hidden by your channel filter` : ""}`;
+  for (const b of relModal.querySelectorAll("[data-k]")) b.setAttribute("aria-pressed", String(Number(b.dataset.k) === REL.k));
+  const anomDays = S.dayAnom.filter(Boolean).length;
+
+  relMain.innerHTML = `
+    <dl class="stats rel-stats">
+      <div><dt>Messages</dt><dd>${msgs.length}</dd></div>
+      <div><dt>${esc(shortN(A))} → ${esc(shortN(B))}</dt><dd>${ab}</dd></div>
+      <div><dt>${esc(shortN(B))} → ${esc(shortN(A))}</dt><dd>${ba}</dd></div>
+      <div><dt>Mean per day (μ)</dt><dd>${S.mu.toFixed(1)}</dd></div>
+      <div><dt>Std deviation (σ)</dt><dd>${S.sd.toFixed(1)}</dd></div>
+      <div><dt>Anomalies</dt><dd>${S.enough ? anomDays + S.off.size : "—"}</dd></div>
+    </dl>
+    ${sigs.length || pe.approved ? `<div class="rel-signals">${pe.approved ? `<div class="msg is-ok">${ICON.ok}<div><strong>Approved wall-crossing</strong><p>Compliance approved this research-to-trading contact (WC-2291).</p></div></div>` : ""}${sigs.map(msgHTML).join("")}</div>` : ""}
+
+    <section class="rel-section" aria-labelledby="h-flow">
+      <h3 id="h-flow">Conversation flow</h3>
+      <p class="desc">Who sends to whom, and on which channels. Arrow weight is the number of messages in that direction.</p>
+      ${flowHTML(e, pe, A, B, msgs, ab, ba)}
+    </section>
+
+    <section class="rel-section" aria-labelledby="h-daily">
+      <h3 id="h-daily">Daily volume</h3>
+      <p class="desc" id="dailyHelp">Messages per day. The shaded band is the mean plus or minus ${REL.k} standard deviations (μ ± ${REL.k}σ) for this pair over the window; days above it are anomalies. Choose a day to read it. With the keyboard, arrow keys move between days and Enter opens one.</p>
+      <ul class="legend chart-legend" aria-hidden="true">
+        <li><svg viewBox="0 0 14 14"><rect x="3" y="2" width="8" height="12" fill="currentColor" opacity=".78"/></svg>Messages</li>
+        <li><svg viewBox="0 0 14 14"><rect x="3" y="2" width="8" height="12" fill="url(#kg-warn)" stroke="var(--warning)" stroke-width="1.5"/></svg>Anomaly</li>
+        <li><svg viewBox="0 0 22 14"><rect x="0" y="2" width="22" height="10" class="band"/></svg>μ ± ${REL.k}σ</li>
+        <li><svg class="line-swatch" viewBox="0 0 28 10"><line x1="2" y1="5" x2="26" y2="5" stroke="currentColor" stroke-width="1.5"/></svg>Mean</li>
+        <li><svg class="line-swatch" viewBox="0 0 28 10"><line x1="2" y1="5" x2="26" y2="5" stroke="var(--warning)" stroke-width="1.8" stroke-dasharray="5 4"/></svg>Anomaly threshold</li>
+        <li><svg viewBox="0 0 14 14"><rect x="1" y="1" width="12" height="12" class="wkend"/></svg>Weekend</li>
+      </ul>
+      <div class="chart-box" id="dailyBox"></div>
+      ${S.enough ? "" : `<p class="note">Fewer than 8 messages in this window, so there’s no reliable baseline and nothing is flagged as an anomaly.</p>`}
+    </section>
+
+    <section class="rel-section" aria-labelledby="h-hours">
+      <h3 id="h-hours">When messages happen</h3>
+      <p class="desc">Each mark is one message, by day and time of day. The band is this pair’s usual hours${S.enough ? `, ${fmtTime(S.lo)} to ${fmtTime(S.hi)}` : ""}: the median send time ± ${REL.k} robust standard deviations, so a burst of late messages can’t stretch its own baseline. Select a mark to read the message in context.</p>
+      <ul class="legend chart-legend" aria-hidden="true">
+        <li><svg viewBox="-7 -7 14 14"><circle r="3.6" fill="currentColor"/></svg>${esc(shortN(A))} → ${esc(shortN(B))}</li>
+        <li><svg viewBox="-7 -7 14 14"><circle r="3.4" fill="var(--bg)" stroke="currentColor" stroke-width="1.5"/></svg>${esc(shortN(B))} → ${esc(shortN(A))}</li>
+        <li><svg viewBox="-7 -7 14 14"><path d="M0 -5 L5 0 L0 5 L-5 0Z" fill="var(--warning)"/></svg>Outside usual hours</li>
+        <li><svg viewBox="-8 -8 16 16"><circle r="3" fill="currentColor"/><circle r="6.5" fill="none" stroke="var(--error)" stroke-width="1.6"/></svg>Policy flag</li>
+      </ul>
+      <div class="chart-box" id="hoursBox"></div>
+    </section>
+
+    <section class="rel-section" aria-labelledby="h-anoms">
+      <h3 id="h-anoms">Anomalies <span class="count-tag">${S.enough ? anomDays + S.off.size : 0}</span></h3>
+      ${anomListHTML()}
+    </section>
+
+    <details class="rel-details">
+      <summary>Daily counts as a table</summary>
+      <div class="table-scroll"><table class="doc-table">
+        <thead><tr><th scope="col">Day</th><th scope="col" class="num">Messages</th><th scope="col" class="num">σ from mean</th><th scope="col">Anomaly</th></tr></thead>
+        <tbody>${S.c.map((n, d) => `<tr><th scope="row">${fmtDay(d)}</th><td class="num">${n}</td><td class="num">${S.sd ? zOf(d).toFixed(1) : "—"}</td><td>${S.dayAnom[d] ? "Yes, above μ + " + REL.k + "σ" : ""}</td></tr>`).join("")}</tbody>
+      </table></div>
+    </details>`;
+  drawRelCharts();
+  renderRelPanel();
+}
+
+function flowHTML(e, pe, A, B, msgs, ab, ba) {
+  const max = Math.max(1, ab, ba);
+  const t = n => n ? (2 + 12 * n / max).toFixed(1) : 1;
+  const box = id => { const n = NODES.get(id); return `<div class="flow-node">${glyph(n.type)}<strong>${esc(n.label)}</strong><span>${esc(n.type === "employee" ? `${n.role} · ${n.dept}` : n.type === "external" ? `${n.role} · ${n.firm}` : n.sub)}</span></div>`; };
+  const arrow = (n, f, to, rev) => `<div class="flow-arrow${rev ? " is-rev" : ""}${n ? "" : " is-empty"}" style="--t:${t(n)}px"><span class="flow-label">${esc(shortN(f))} → ${esc(shortN(to))} · <strong>${n}</strong> message${n === 1 ? "" : "s"}</span><span class="flow-line" aria-hidden="true"><span class="shaft"></span><span class="head"></span></span></div>`;
+  const rows = CHANNELS.filter(ch => e.channels[ch]).map(ch => {
+    const on = state.channels.has(ch);
+    const list = msgs.filter(m => m.ch === ch), x = list.filter(m => m.from === A).length;
+    const un = (pe.unmon && pe.unmon.has(ch)) || (e.unmon && e.unmon.has(ch));
+    return `<tr><th scope="row">${esc(ch)}</th><td class="num">${on ? x : "—"}</td><td class="num">${on ? list.length - x : "—"}</td><td>${on ? (un ? `<span class="tag is-unmon">Not captured</span>` : "Captured") : "Hidden by filter"}</td></tr>`;
+  }).join("");
+  return `<div class="flow">${box(A)}<div class="flow-arrows">${arrow(ab, A, B)}${arrow(ba, B, A, true)}</div>${box(B)}</div>
+    <div class="table-scroll"><table class="doc-table flow-table"><thead><tr><th scope="col">Channel</th><th scope="col" class="num">${esc(shortN(A))} → ${esc(shortN(B))}</th><th scope="col" class="num">${esc(shortN(B))} → ${esc(shortN(A))}</th><th scope="col">Capture</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function dailySVG(W) {
+  const S = REL.S, k = REL.k;
+  const H = 230, pl = 34, pr = 12, pt = 24, pb = 28, iw = W - pl - pr, ih = H - pt - pb;
+  const top = Math.max(4, ...S.c, S.thresh) * 1.18;
+  const y = v => pt + ih - v / top * ih, bw = iw / DAYS, x = d => pl + d * bw;
+  const step = niceStep(top);
+  let s = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="group" aria-labelledby="h-daily" aria-describedby="dailyHelp"><g aria-hidden="true">`;
+  for (let d = 0; d < DAYS; d++) if (isWeekend(d)) s += `<rect class="wkend" x="${x(d)}" y="${pt}" width="${bw}" height="${ih}"/>`;
+  s += `<g class="axis">`;
+  for (let v = 0; v <= top; v += step) s += `<line x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}"/><text x="${pl - 6}" y="${y(v) + 3.5}" text-anchor="end">${v}</text>`;
+  for (let d = 0; d < DAYS; d++) if (dayDate(d).getUTCDay() === 1 || d === 0) s += `<text x="${x(d) + bw / 2}" y="${H - 8}" text-anchor="middle">${fmtShort(d)}</text>`;
+  s += `</g>`;
+  if (S.enough) { const b0 = Math.max(0, S.mu - k * S.sd); s += `<rect class="band" x="${pl}" width="${iw}" y="${y(S.thresh)}" height="${y(b0) - y(S.thresh)}"/>`; }
+  s += `</g><g class="day-bars">`;
+  for (let d = 0; d < DAYS; d++) {
+    const v = S.c[d], an = S.dayAnom[d];
+    const label = `${fmtDay(d)}, ${plural(v, "message")}${an ? `, anomaly, ${zOf(d).toFixed(1)} standard deviations above the mean` : ""}`;
+    const bx = x(d) + bw * .16, w = bw * .68;
+    s += `<g class="day-bar${an ? " is-anom" : ""}${REL.day === d ? " is-sel" : ""}" data-day="${d}" role="button" tabindex="-1" aria-pressed="${REL.day === d}" aria-label="${esc(label)}"><rect class="bar-hit" x="${x(d)}" y="${pt}" width="${bw}" height="${ih}" rx="3"/>${v ? `<rect class="bar" x="${bx}" y="${y(v)}" width="${w}" height="${y(0) - y(v)}" rx="1.5"/>` : ""}<rect class="focus-ring" x="${x(d) + 1}" y="${pt + 1}" width="${bw - 2}" height="${ih - 2}" rx="3"/>${an ? `<path class="anom-mark" d="M${x(d) + bw / 2} ${y(v) - 14} l5.5 9 h-11z"/>` : ""}</g>`;
+  }
+  s += `</g>`;
+  if (S.enough) s += `<g class="chart-lines" aria-hidden="true"><line class="mean-line" x1="${pl}" x2="${W - pr}" y1="${y(S.mu)}" y2="${y(S.mu)}"/><line class="thresh-line" x1="${pl}" x2="${W - pr}" y1="${y(S.thresh)}" y2="${y(S.thresh)}"/><text class="line-label" x="${W - pr}" y="${y(S.thresh) - 5}" text-anchor="end">μ + ${k}σ = ${S.thresh.toFixed(1)}</text><text class="line-label" x="${pl + 4}" y="${y(S.mu) - 5}">μ = ${S.mu.toFixed(1)}</text></g>`;
+  return s + `</svg>`;
+}
+
+function hoursSVG(W) {
+  const S = REL.S, A = REL.A;
+  const H = 280, pl = 46, pr = 12, pt = 12, pb = 28, iw = W - pl - pr, ih = H - pt - pb;
+  const y = m => pt + m / 1440 * ih, bw = iw / DAYS, x = d => pl + d * bw;
+  let s = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true">`;
+  for (let d = 0; d < DAYS; d++) if (isWeekend(d)) s += `<rect class="wkend" x="${x(d)}" y="${pt}" width="${bw}" height="${ih}"/>`;
+  s += `<g class="axis">`;
+  for (let h = 0; h <= 24; h += 6) s += `<line x1="${pl}" x2="${W - pr}" y1="${y(h * 60)}" y2="${y(h * 60)}"/><text x="${pl - 6}" y="${y(h * 60) + 3.5}" text-anchor="end">${String(h).padStart(2, "0")}:00</text>`;
+  for (let d = 0; d < DAYS; d++) if (dayDate(d).getUTCDay() === 1 || d === 0) s += `<text x="${x(d) + bw / 2}" y="${H - 8}" text-anchor="middle">${fmtShort(d)}</text>`;
+  s += `</g>`;
+  if (S.enough) s += `<rect class="band" x="${pl}" width="${iw}" y="${y(S.lo)}" height="${y(S.hi) - y(S.lo)}"/><line class="band-edge" x1="${pl}" x2="${W - pr}" y1="${y(S.lo)}" y2="${y(S.lo)}"/><line class="band-edge" x1="${pl}" x2="${W - pr}" y1="${y(S.hi)}" y2="${y(S.hi)}"/><text class="line-label" x="${pl + 4}" y="${y(S.lo) - 4}">Usual hours ${fmtTime(S.lo)}–${fmtTime(S.hi)}</text>`;
+  if (REL.day != null) s += `<rect class="day-sel" x="${x(REL.day)}" y="${pt}" width="${bw}" height="${ih}" rx="3"/>`;
+  const byDay = new Map();
+  REL.msgs.forEach((m, i) => (byDay.get(m.day) || byDay.set(m.day, []).get(m.day)).push(i));
+  for (const [d, idx] of byDay) idx.forEach((i, j) => {
+    const m = REL.msgs[i], n = idx.length;
+    const cx = x(d) + bw / 2 + (n > 1 ? (j / (n - 1) - .5) * bw * .56 : 0), cy = y(m.min);
+    const off = S.off.has(m), viol = msgFlags(m).length > 0, mine = m.from === A;
+    const shape = off ? `<path class="d-shape" d="M0 -4.8 L4.8 0 L0 4.8 L-4.8 0Z"/>` : `<circle class="d-shape" r="${mine ? 3.4 : 3.1}"/>`;
+    s += `<g class="dot ${mine ? "ab" : "ba"}${off ? " is-off" : ""}${REL.msg === i ? " is-focus" : ""}" data-mi="${i}" transform="translate(${cx.toFixed(1)} ${cy.toFixed(1)})"><title>${esc(`${fmtDay(d)} ${fmtTime(m.min)} · ${m.ch} · ${name(m.from)} → ${name(m.to)}${off ? " · outside usual hours" : ""}${viol ? " · policy flag" : ""}`)}</title><circle class="d-hit" r="8"/>${viol ? `<circle class="viol" r="7"/>` : ""}${shape}<circle class="d-sel" r="10"/></g>`;
+  });
+  return s + `</svg>`;
+}
+
+function drawRelCharts() {
+  const hadFocus = document.activeElement?.closest?.(".day-bar") ? Number(document.activeElement.closest(".day-bar").dataset.day) : null;
+  const db = $("dailyBox"), hb = $("hoursBox");
+  if (!db) return;
+  db.innerHTML = dailySVG(Math.max(320, db.clientWidth));
+  hb.innerHTML = hoursSVG(Math.max(320, hb.clientWidth));
+  const S = REL.S;
+  const first = REL.barFocus ?? REL.day ?? S.dayAnom.findIndex(Boolean);
+  const f = first >= 0 ? first : Math.max(0, S.c.findIndex(n => n > 0));
+  REL.barFocus = f;
+  db.querySelector(`.day-bar[data-day="${f}"]`)?.setAttribute("tabindex", "0");
+  if (hadFocus != null) db.querySelector(`.day-bar[data-day="${hadFocus}"]`)?.focus({ preventScroll: true });
+}
+
+function anomListHTML() {
+  const S = REL.S;
+  if (!S.enough) return `<p class="insp-empty">Not enough messages for a baseline.</p>`;
+  const items = [];
+  S.dayAnom.forEach((an, d) => { if (an) items.push({ d, min: -1, html: `<span class="anom-title">${fmtDay(d)} · ${plural(S.c[d], "message")}</span><span class="anom-sub">Unusual volume: ${zOf(d).toFixed(1)}σ above a mean of ${S.mu.toFixed(1)} a day</span>`, attrs: `data-day="${d}"` }); });
+  REL.msgs.forEach((m, i) => { if (S.off.has(m)) items.push({ d: m.day, min: m.min, html: `<span class="anom-title">${fmtDay(m.day)} ${fmtTime(m.min)} · ${esc(m.ch)}</span><span class="anom-sub">${esc(name(m.from))} → ${esc(name(m.to))} · outside usual hours</span>`, attrs: `data-day="${m.day}" data-mi="${i}"` }); });
+  if (!items.length) return `<div class="msg is-ok">${ICON.ok}<div><strong>No anomalies at ${REL.k}σ</strong><p>Every day and every message is inside the usual range. Try 1σ for a more sensitive view.</p></div></div>`;
+  items.sort((a, b) => a.d - b.d || a.min - b.min);
+  return `<ul class="anom-list">${items.map(it => `<li><button class="anom-btn" type="button" ${it.attrs}>${ICON.med}<span>${it.html}</span></button></li>`).join("")}</ul>`;
+}
+
+const flagChips = (f, off) => {
+  const ids = [...new Set(f.map(x => x.id))];
+  return ids.map(id => `<span class="flag is-viol">${ICON.high}${esc(POLICY[id].name)}</span>`).join("") + (off ? `<span class="flag is-anom">${ICON.med}Outside usual hours</span>` : "");
+};
+const policyCard = (id, extra) => `<div class="msg is-high">${ICON.high}<div><strong>${esc(POLICY[id].name)}</strong>${extra ? `<span class="sev">${esc(extra)}</span>` : ""}<p>${esc(POLICY[id].desc)}</p></div></div>`;
+
+function bubbleHTML(m, i) {
+  const f = msgFlags(m), off = REL.S.off.has(m), un = msgUnmon(m);
+  return `<li class="bubble ${m.from === REL.A ? "is-a" : "is-b"}${f.length ? " has-viol" : ""}${REL.msg === i ? " is-focus" : ""}" data-bubble="${i}">
+    <div class="bubble-meta"><span class="bubble-who">${esc(name(m.from))} → ${esc(name(m.to))}</span><span>${fmtTime(m.min)}</span><span class="tag${un ? " is-unmon" : ""}">${esc(m.ch)}${un ? " · not captured" : ""}</span>${m.tr ? `<span class="tag">Translated from ${esc(m.tr)}</span>` : ""}</div>
+    <p class="bubble-text">${m.call ? `<span class="call-tag">Call</span>` : ""}${markText(m.text, f)}</p>
+    ${f.length || off ? `<div class="flags">${flagChips(f, off)}</div>` : ""}
+  </li>`;
+}
+
+function renderRelPanel(scrollTo) {
+  const S = REL.S, A = REL.A, B = REL.B, msgs = REL.msgs;
+  const pe = personEdgeOf(EDGE.get(REL.id));
+  const barrier = (SIG_BY_EDGE.get(pe.id) || []).some(s => s.type === "barrier");
+  if (REL.day == null) {
+    const flagged = msgs.map((m, i) => ({ m, i, f: msgFlags(m) })).filter(x => x.f.length);
+    const counts = {};
+    for (const x of flagged) for (const id of new Set(x.f.map(f => f.id))) counts[id] = (counts[id] || 0) + 1;
+    relPanel.innerHTML = `<div class="rp-head"><p class="insp-kicker">Conversation</p><h3 class="rp-title" id="rpTitle" tabindex="-1">Policy review</h3><p class="rp-sub">Choose a day on the timeline or a mark on the chart to read that day’s messages here.</p></div>
+      <div class="rp-body">
+        ${barrier ? policyCard("barrier", "Every message") : ""}
+        ${Object.entries(counts).map(([id, n]) => policyCard(id, plural(n, "message"))).join("")}
+        ${!barrier && !flagged.length ? `<div class="msg is-ok">${ICON.ok}<div><strong>No policy flags</strong><p>None of these ${plural(msgs.length, "message")} match a policy rule.</p></div></div>` : ""}
+        ${flagged.length ? `<h4 class="rp-h">Flagged messages <span>${flagged.length}</span></h4><ul class="flag-list">${flagged.map(x => `<li><button class="flag-btn" type="button" data-day="${x.m.day}" data-mi="${x.i}"><span class="flag-when">${fmtDay(x.m.day)} ${fmtTime(x.m.min)} · ${esc(x.m.ch)} · ${esc(shortN(x.m.from))} → ${esc(shortN(x.m.to))}</span><span class="flag-text">${markText(x.m.text, x.f)}</span><span class="flags">${flagChips(x.f, S.off.has(x.m))}</span></button></li>`).join("")}</ul>` : ""}
+      </div>`;
+    return;
+  }
+  const d = REL.day;
+  const day = msgs.map((m, i) => ({ m, i })).filter(x => x.m.day === d);
+  const nab = day.filter(x => x.m.from === A).length;
+  const nFlag = day.filter(x => msgFlags(x.m).length || S.off.has(x.m)).length;
+  const withMsgs = S.c.map((n, i) => n ? i : -1).filter(i => i >= 0);
+  const prev = [...withMsgs].reverse().find(i => i < d), next = withMsgs.find(i => i > d);
+  relPanel.innerHTML = `<div class="rp-head">
+      <div class="rp-top"><button class="text-button" type="button" data-review>← Policy review</button>
+        <span class="rp-nav"><button class="icon-button" type="button" ${prev == null ? "disabled" : `data-day="${prev}"`} aria-label="Previous day with messages${prev != null ? ", " + fmtDay(prev) : ""}">‹</button><button class="icon-button" type="button" ${next == null ? "disabled" : `data-day="${next}"`} aria-label="Next day with messages${next != null ? ", " + fmtDay(next) : ""}">›</button></span></div>
+      <p class="insp-kicker">Conversation · ${esc(shortN(A))} and ${esc(shortN(B))}</p>
+      <h3 class="rp-title" id="rpTitle" tabindex="-1">${fmtDay(d)}</h3>
+      <p class="rp-sub">${plural(day.length, "message")} · ${nab} ${esc(shortN(A))} → ${esc(shortN(B))} · ${day.length - nab} ${esc(shortN(B))} → ${esc(shortN(A))}${nFlag ? ` · <strong>${nFlag} flagged</strong>` : ""}</p>
+    </div>
+    <div class="rp-body">
+      ${S.dayAnom[d] ? `<div class="msg">${ICON.med}<div><strong>Unusual volume</strong><span class="sev">${zOf(d).toFixed(1)}σ</span><p>${plural(S.c[d], "message")} against a usual ${S.mu.toFixed(1)} ± ${S.sd.toFixed(1)} a day.</p></div></div>` : ""}
+      ${barrier ? policyCard("barrier", "Every message") : ""}
+      ${day.length ? `<ol class="chat">${day.map(x => bubbleHTML(x.m, x.i)).join("")}</ol>` : `<p class="insp-empty">No messages this day.</p>`}
+    </div>`;
+  if (scrollTo != null) requestAnimationFrame(() => relPanel.querySelector(`[data-bubble="${scrollTo}"]`)?.scrollIntoView({ block: "center", behavior: reduceMotion.matches ? "auto" : "smooth" }));
+  else relPanel.scrollTop = 0;
+}
+
+function selectRelDay(d, mi = null, { focusPanel = false } = {}) {
+  REL.day = d; REL.msg = mi; REL.barFocus = d;
+  drawRelCharts();
+  renderRelPanel(mi);
+  const n = REL.S.c[d], fl = REL.msgs.filter(m => m.day === d && (msgFlags(m).length || REL.S.off.has(m))).length;
+  relSay(`${fmtDay(d)}: ${plural(n, "message")}${fl ? `, ${fl} flagged` : ""}. Shown in the conversation panel.`);
+  if (focusPanel) $("rpTitle")?.focus({ preventScroll: true });
+}
+
+relMain.addEventListener("click", ev => {
+  const dot = ev.target.closest(".dot");
+  if (dot) { const i = Number(dot.dataset.mi); return selectRelDay(REL.msgs[i].day, i); }
+  const bar = ev.target.closest(".day-bar");
+  if (bar) return selectRelDay(Number(bar.dataset.day));
+  const b = ev.target.closest(".anom-btn");
+  if (b) return selectRelDay(Number(b.dataset.day), b.dataset.mi != null ? Number(b.dataset.mi) : null);
+});
+relMain.addEventListener("keydown", ev => {
+  const bar = ev.target.closest(".day-bar"); if (!bar) return;
+  const d = Number(bar.dataset.day);
+  let n = null;
+  if (ev.key === "ArrowRight") n = Math.min(DAYS - 1, d + 1);
+  if (ev.key === "ArrowLeft") n = Math.max(0, d - 1);
+  if (ev.key === "Home") n = 0;
+  if (ev.key === "End") n = DAYS - 1;
+  if (n != null) {
+    ev.preventDefault();
+    bar.setAttribute("tabindex", "-1");
+    const el = $("dailyBox").querySelector(`.day-bar[data-day="${n}"]`);
+    el.setAttribute("tabindex", "0"); el.focus(); REL.barFocus = n;
+    return;
+  }
+  if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); selectRelDay(d); }
+});
+relPanel.addEventListener("click", ev => {
+  if (ev.target.closest("[data-review]")) { REL.day = null; REL.msg = null; drawRelCharts(); renderRelPanel(); relSay("Policy review."); $("rpTitle").focus({ preventScroll: true }); return; }
+  const b = ev.target.closest("[data-day]");
+  if (b) selectRelDay(Number(b.dataset.day), b.dataset.mi != null ? Number(b.dataset.mi) : null, { focusPanel: true });
+});
+relModal.querySelector(".rel-k").addEventListener("click", ev => {
+  const b = ev.target.closest("[data-k]"); if (!b) return;
+  REL.k = Number(b.dataset.k);
+  renderRel();
+  relModal.querySelector(`[data-k="${REL.k}"]`).focus();
+  const S = REL.S;
+  relSay(`Threshold ${REL.k} standard deviations. ${plural(S.dayAnom.filter(Boolean).length, "day")} above it, ${plural(S.off.size, "message")} outside usual hours.`);
+});
+$("relClose").addEventListener("click", () => relModal.close());
+relModal.addEventListener("click", ev => { if (ev.target === relModal) relModal.close(); });
+relModal.addEventListener("close", () => {
+  document.documentElement.classList.remove("modal-open");
+  const o = REL.opener; REL.id = null;
+  if (o && o.isConnected) o.focus({ preventScroll: true });
+});
+new ResizeObserver(() => { if (relModal.open && REL.id) drawRelCharts(); }).observe(relMain);
 
 /* ======================================================================
    Data model table (shapes)
@@ -2145,7 +2852,7 @@ function route(initial) {
   for (const a of document.querySelectorAll(".top-nav a")) { if (a.dataset.route === r) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); }
   document.title = { overview: "Knowledge Graph", explorer: "Explorer · Knowledge Graph", "data-model": "Data model · Knowledge Graph", accessibility: "Accessibility · Knowledge Graph" }[r];
   if (r === "explorer") {
-    if (!explorerReady) { explorerReady = true; update({ say: false }); $("hears").textContent = statusText(); }
+    if (!explorerReady) { explorerReady = true; update({ say: false, intro: true }); $("hears").textContent = statusText(); }
     else if (measure()) { renderGraph(); place(CUR); }
   }
   if (!initial) {
