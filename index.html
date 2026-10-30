@@ -318,21 +318,25 @@
   .graph-empty[hidden] { display: none; }
 
   .hull path { fill: color-mix(in srgb, var(--ink) 5%, var(--bg)); stroke: color-mix(in srgb, var(--ink) 30%, var(--bg)); stroke-width: 1.25; stroke-dasharray: 4 4; }
-  .is-grouped:not(.has-selection) .edge.is-cross .edge-line { opacity: .14; }
+  .is-grouped:not(.has-selection) .edge.is-cross .edge-vis { opacity: .14; }
   .is-grouped:not(.has-selection) .edge.is-cross .edge-mark { opacity: .5; }
   .hull text { font-size: 11px; font-weight: 500; fill: var(--ink-faint); paint-order: stroke; stroke: var(--bg); stroke-width: 4px; stroke-linejoin: round; letter-spacing: .01em; }
 
-  .edge-line { stroke: currentColor; stroke-linecap: round; opacity: .42; transition: opacity .15s ease; }
-  .edge.is-unmonitored .edge-line { stroke-dasharray: 6 5; stroke-linecap: butt; opacity: .7; }
-  .edge.is-structural .edge-line { stroke-dasharray: .1 4.5; stroke-width: 1.6px; opacity: .55; }
+  .edge-line { stroke: currentColor; stroke-linecap: round; }
+  .edge-arrow { fill: currentColor; stroke: none; }
+  .edge-vis { opacity: .45; transition: opacity .15s ease; }
+  .edge.is-unmonitored .edge-line { stroke-dasharray: 6 5; stroke-linecap: butt; }
+  .edge.is-unmonitored .edge-vis { opacity: .7; }
+  .edge.is-structural .edge-line { stroke-dasharray: .1 4.5; stroke-width: 1.6px; }
+  .edge.is-structural .edge-vis { opacity: .55; }
   .edge-hit { stroke: transparent; stroke-width: 14px; cursor: pointer; }
   .edge-mark { fill: currentColor; stroke: var(--bg); stroke-width: 1.5px; }
-  .edge:hover .edge-line { opacity: .9; }
-  .has-selection .edge .edge-line { opacity: .07; }
+  .edge:hover .edge-vis { opacity: .9; }
+  .has-selection .edge .edge-vis { opacity: .07; }
   .has-selection .edge .edge-mark { opacity: .15; }
-  .has-selection .edge.is-related .edge-line { opacity: .85; }
+  .has-selection .edge.is-related .edge-vis { opacity: .85; }
   .has-selection .edge.is-related .edge-mark { opacity: 1; }
-  .edge.is-selected .edge-line { opacity: 1 !important; }
+  .edge.is-selected .edge-vis { opacity: 1 !important; }
   .edge.is-selected .edge-halo { opacity: 1; }
   .edge-halo { stroke: var(--focus); stroke-linecap: round; opacity: 0; }
 
@@ -353,7 +357,7 @@
   .node.show-label .label { opacity: 1; }
   .node.is-selected .label { font-weight: 600; }
   @media (prefers-reduced-motion: reduce) {
-    .node, .edge-line, .node .shape { transition: none; }
+    .node, .edge-vis, .node .shape { transition: none; }
   }
 
   .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--ink-soft); }
@@ -521,12 +525,6 @@
 
 
   /* ---------- Directional arrows on graph edges ---------- */
-  .edge-arrow { fill: currentColor; opacity: .7; transition: opacity .15s ease; }
-  .edge.is-unmonitored .edge-arrow { opacity: .85; }
-  .edge:hover .edge-arrow { opacity: 1; }
-  .has-selection .edge .edge-arrow { opacity: .1; }
-  .has-selection .edge.is-related .edge-arrow { opacity: 1; }
-  .is-grouped:not(.has-selection) .edge.is-cross .edge-arrow { opacity: .22; }
 
   /* ---------- Relationship modal (90% of the screen) ---------- */
   html.modal-open { overflow: hidden; }
@@ -806,11 +804,11 @@
     <h2 id="h-diff">What this version does differently</h2>
     <p>I worked on relationship mapping inside an archiving and surveillance product. This is a ground-up rethink of the explorer, built around the analyst’s questions rather than the database.</p>
     <dl class="feature-list">
-      <div><dt>Fifty nodes, on purpose</dt><dd>The view never draws more than 50 resources. When more match, they’re ranked by signals and connection strength, and the page tells you how many are hidden and how to reach them.</dd></div>
+      <div><dt>Ten to start, thirty at most</dt><dd>The view opens on the 10 strongest resources and never draws more than 30. When more match, they’re ranked by signals and connection strength, and the page tells you how many are hidden and how to reach them.</dd></div>
       <div><dt>You choose the resource type</dt><dd>Look at people, or switch to the accounts, phone numbers and trades behind them. An unattributed WhatsApp number only shows up when you look at accounts.</dd></div>
       <div><dt>Shape and line, not color</dt><dd>Each resource type has its own shape and fill. Monitored channels are solid lines, unmonitored ones are dashed. Color is saved for warnings.</dd></div>
       <div><dt>Every view has a table and a summary</dt><dd>The same data is a keyboard-navigable graph, a relationships table, and a written summary, so people who read differently get the same answer.</dd></div>
-      <div><dt>Center on anyone</dt><dd>Start from a person, an account or a trade, and the graph rebuilds around them, nearest connections first, up to the limit you set.</dd></div>
+      <div><dt>Select anyone to re-center</dt><dd>Select a person, an account or a trade and the graph rebuilds around them: their strongest direct connections first, then the next ring out, up to the limit you set.</dd></div>
       <div><dt>Signals you can explain</dt><dd>Every flag says what tripped it, by how much, and which messages sit behind it. No black-box scores.</dd></div>
       <div><dt>Arrows show who’s talking</dt><dd>Every line has an arrowhead at each end, sized by how many messages went that way. A one-sided relationship has a single arrow.</dd></div>
       <div><dt>A timeline behind every line</dt><dd>Select a relationship to see daily volume against its own mean and standard deviation, when messages were sent, which days and messages fall outside the band, and the conversation itself with policy flags highlighted.</dd></div>
@@ -831,7 +829,7 @@
     <div>
       <p class="page-kicker">Explorer · Coruscant Capital · last 30 days</p>
       <h1 class="page-title" id="h-explorer" tabindex="-1">Relationship graph</h1>
-      <p class="page-lede">Choose which resources to map and which channels to count. The graph shows up to 50 at a time, strongest signals first.</p>
+      <p class="page-lede">Choose which resources to map and which channels to count. The graph starts with the 10 strongest and goes up to 30. Select anyone to rebuild the graph around them.</p>
     </div>
   </div>
 
@@ -850,15 +848,22 @@
         <span class="select-wrap"><select class="select" id="centerSelect"></select></span>
       </div>
       <div class="field range-field">
-        <label for="limitRange">Node limit <output id="limitOut" for="limitRange">50</output></label>
-        <input type="range" id="limitRange" min="10" max="50" step="5" value="50" aria-describedby="limitHint">
-        <span class="sr-only" id="limitHint">Maximum 50.</span>
+        <label for="limitRange">Node limit <output id="limitOut" for="limitRange">10</output></label>
+        <input type="range" id="limitRange" min="5" max="30" step="1" value="10" aria-describedby="limitHint">
+        <span class="sr-only" id="limitHint">From 5 to 30.</span>
       </div>
       <div class="field">
         <span class="group-label" id="groupLabel">Group by</span>
         <div class="segmented" role="group" aria-labelledby="groupLabel">
           <button type="button" data-group="none" aria-pressed="true">None</button>
           <button type="button" data-group="team" aria-pressed="false">Team or firm</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="group-label" id="sizeLabel">Node size</span>
+        <div class="segmented" id="sizeSeg" role="group" aria-labelledby="sizeLabel">
+          <button type="button" data-size="standard" aria-pressed="true">Standard</button>
+          <button type="button" data-size="volume" aria-pressed="false">By message volume</button>
         </div>
       </div>
       <button class="text-button" type="button" id="resetButton">Reset view</button>
@@ -899,7 +904,7 @@
         <div class="hears">
           <div class="hears-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>Screen reader hears</div>
           <div class="hears-text" id="hears" role="status" aria-live="polite"></div>
-          <div class="hears-help" id="graphHelp">In the graph: arrow keys move between resources, <kbd>Enter</kbd> selects, <kbd>N</kbd> steps through connections, <kbd>C</kbd> centers, <kbd>E</kbd> opens the timeline, <kbd>Esc</kbd> clears. Select a line to open its timeline.</div>
+          <div class="hears-help" id="graphHelp">In the graph: arrow keys move between resources, <kbd>Enter</kbd> selects and re-centers, <kbd>N</kbd> steps through connections, <kbd>C</kbd> centers, <kbd>E</kbd> opens the timeline, <kbd>Esc</kbd> clears. Select a line to open its timeline.</div>
         </div>
       </div>
 
@@ -970,8 +975,8 @@
   </section>
 
   <section class="doc-section" aria-labelledby="h-fifty">
-    <h2 id="h-fifty">Why fifty</h2>
-    <p>A force layout past about fifty nodes becomes a hairball you can’t read, a keyboard user can’t traverse, and a screen reader can’t summarize. So the API is paged at 50, and the interface treats the limit as a feature: rank, show, and say what’s hidden.</p>
+    <h2 id="h-fifty">Why ten, and never more than thirty</h2>
+    <p>A force layout gets hard to read well before fifty nodes, and every extra node is another stop for a keyboard user and another line for a screen reader. So the view opens on 10, pages at 30 at most, and treats the limit as a feature: rank, show, say what’s hidden, and let the analyst re-center to go further.</p>
     <p class="code-label">Cypher · research-to-trading contact without a wall-crossing</p>
 <pre class="code"><code><span class="c">// Last 30 days, strongest pairs first, one page</span>
 <span class="k">MATCH</span> (r:Employee {dept: <span class="s">"Research"</span>})-[m:MESSAGED|CALLED]-(t:Employee)
@@ -980,12 +985,12 @@
   <span class="k">AND NOT</span> (r)-[:WALL_CROSSED {status: <span class="s">"approved"</span>}]-(t)
 <span class="k">RETURN</span> r.name, t.name, m.channel, count(m) <span class="k">AS</span> messages
 <span class="k">ORDER BY</span> messages <span class="k">DESC</span>
-<span class="k">LIMIT</span> 50</code></pre>
+<span class="k">LIMIT</span> 30</code></pre>
     <p class="code-label">GraphQL · one page of a neighborhood, Relay connection style</p>
 <pre class="code"><code><span class="k">query</span> Neighborhood($id: ID!, $types: [ResourceType!], $after: String) {
   node(id: $id) {
     id
-    relationships(first: 50, after: $after, types: $types) {
+    relationships(first: 30, after: $after, types: $types) {
       totalCount
       edges {
         cursor
@@ -997,7 +1002,7 @@
     }
   }
 }</code></pre>
-    <p class="note"><code>totalCount</code> is what lets the explorer say “showing 50 of 312” instead of silently dropping the rest.</p>
+    <p class="note"><code>totalCount</code> is what lets the explorer say “showing 30 of 312” instead of silently dropping the rest.</p>
   </section>
   <p class="footer">Knowledge Graph · v0.1 preview</p>
 </section>
@@ -1010,7 +1015,7 @@
 
   <section class="doc-section is-wide" aria-labelledby="h-layers">
     <h2 id="h-layers">Three ways to read one view</h2>
-    <p>Same filters, same 50 resources, three forms. Switching tabs never changes the data.</p>
+    <p>Same filters, same resources, three forms. Switching tabs never changes the data.</p>
     <ul class="layers">
       <li><span class="layer-tag">01 · Graph</span><strong>Spatial</strong><span>For spotting clusters and bridges at a glance. Fully keyboard-operable, with what a screen reader hears shown underneath.</span></li>
       <li><span class="layer-tag">02 · Table</span><strong>Relational</strong><span>Every relationship in view as a row: both ends, edge types, channels, volume, change and signals. Names select the resource.</span></li>
@@ -1026,7 +1031,7 @@
       <tbody>
         <tr><th scope="row"><kbd>Tab</kbd></th><td>Enter the graph on the selected resource, or the highest-ranked one. Tab again to leave.</td></tr>
         <tr><th scope="row"><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></th><td>Move to the nearest resource in that direction.</td></tr>
-        <tr><th scope="row"><kbd>Enter</kbd> or <kbd>Space</kbd></th><td>Select the focused resource; details open alongside.</td></tr>
+        <tr><th scope="row"><kbd>Enter</kbd> or <kbd>Space</kbd></th><td>Select the focused resource and rebuild the graph around it, up to the node limit. On the resource already at the center, toggles the selection.</td></tr>
         <tr><th scope="row"><kbd>N</kbd> · <kbd>Shift</kbd> <kbd>N</kbd></th><td>Next or previous connection of the focused resource, busiest first.</td></tr>
         <tr><th scope="row"><kbd>C</kbd></th><td>Center the graph on the focused resource.</td></tr>
         <tr><th scope="row"><kbd>E</kbd></th><td>Open the timeline for the relationship between the selected and focused resources, or the focused resource’s busiest one.</td></tr>
@@ -1551,7 +1556,7 @@ const sevWord = s => s === "high" ? "High" : "Medium";
 /* ======================================================================
    State and the view model
    ====================================================================== */
-const DEFAULTS = () => ({ types: new Set(["employee", "external"]), channels: new Set(CHANNELS), center: "", limit: 50, group: "none", labels: false, sel: null, view: "graph" });
+const DEFAULTS = () => ({ types: new Set(["employee", "external"]), channels: new Set(CHANNELS), center: "", limit: 10, size: "standard", group: "none", labels: false, sel: null, view: "graph" });
 let state = DEFAULTS();
 let VIEW = null;
 
@@ -1595,21 +1600,38 @@ function computeView() {
       for (const id of frontier) for (const nb of adjAll.get(id)) if (!hop.has(nb)) { hop.set(nb, hop.get(id) + 1); next.push(nb); }
       frontier = next;
     }
-    const ordered = [...hop.keys()].sort((a, b) => hop.get(a) - hop.get(b) || score.get(b) - score.get(a));
+    /* Direct connections rank by how much they talk to the center (plus signals); further rings by overall score. */
+    const tie = new Map();
+    for (const v of all) {
+      if (v.e.a !== centered && v.e.b !== centered) continue;
+      const o = v.e.a === centered ? v.e.b : v.e.a;
+      tie.set(o, (tie.get(o) || 0) + (v.structural ? 3 : Math.sqrt(v.cur)) + (SIG_BY_EDGE.get(v.e.id)?.length || 0) * 6);
+    }
+    const ordered = [...hop.keys()].sort((a, b) => hop.get(a) - hop.get(b) || (tie.get(b) || 0) - (tie.get(a) || 0) || score.get(b) - score.get(a));
     keep = new Set(ordered.slice(0, state.limit)); total = hop.size;
     VIEW_HOP = hop;
   } else {
     if (state.center) state.center = "";
     const ordered = [...vis.keys()].sort((a, b) => score.get(b) - score.get(a) || a.localeCompare(b));
-    keep = new Set(ordered.slice(0, state.limit)); total = vis.size;
+    /* Grow a connected set: start from the strongest resource, then keep adding the strongest one
+       that touches the set, so the first view never strands a node on its own. */
+    keep = new Set();
+    const touching = new Set();
+    for (let i = 0; keep.size < Math.min(state.limit, ordered.length); i++) {
+      const next = ordered.find(id => !keep.has(id) && touching.has(id)) || ordered.find(id => !keep.has(id));
+      keep.add(next);
+      for (const nb of adjAll.get(next)) touching.add(nb);
+    }
+    total = vis.size;
     VIEW_HOP = null;
   }
   const nodes = [...keep].map(id => vis.get(id));
   const edges = all.filter(v => keep.has(v.e.a) && keep.has(v.e.b));
   const adj = new Map(nodes.map(n => [n.id, []]));
-  const wdeg = new Map(nodes.map(n => [n.id, 0]));
+  const wdeg = new Map(nodes.map(n => [n.id, 0])), vol = new Map(nodes.map(n => [n.id, 0]));
   for (const v of edges) {
     adj.get(v.e.a).push({ v, other: v.e.b }); adj.get(v.e.b).push({ v, other: v.e.a });
+    vol.set(v.e.a, vol.get(v.e.a) + v.cur); vol.set(v.e.b, vol.get(v.e.b) + v.cur);
     const w = v.structural ? 1.5 : Math.sqrt(v.cur);
     wdeg.set(v.e.a, wdeg.get(v.e.a) + w); wdeg.set(v.e.b, wdeg.get(v.e.b) + w);
   }
@@ -1627,11 +1649,13 @@ function computeView() {
   const signalsHidden = SIGNALS.length - signals.length;
   const rank = [...nodes].sort((a, b) => score.get(b.id) - score.get(a.id));
   const fullAdj = adjAll;
-  VIEW = { nodes, edges, adj, wdeg, score, total, centered, nodeIds, edgeIds, signals, signalsHidden, rank, fullAdj, vis };
+  VIEW = { nodes, edges, adj, wdeg, vol, score, total, centered, nodeIds, edgeIds, signals, signalsHidden, rank, fullAdj, vis };
 }
 let VIEW_HOP = null;
 let NODE_SCALE = 1, HULL_PAD = 14;
-const radius = id => Math.max(7, Math.min(17, 6 + Math.sqrt(VIEW.wdeg.get(id) || 0) * 1.5)) * NODE_SCALE;
+const radius = id => (state.size === "volume"
+  ? Math.max(6, Math.min(40, 4 + Math.sqrt(VIEW.vol.get(id) || 0) * 2.3))
+  : Math.max(7, Math.min(17, 6 + Math.sqrt(VIEW.wdeg.get(id) || 0) * 1.5))) * NODE_SCALE;
 const nodeSignals = id => (SIG_BY_NODE.get(id) || []).filter(s => VIEW.signals.includes(s));
 const edgeSignals = id => (SIG_BY_EDGE.get(id) || []);
 
@@ -1663,8 +1687,9 @@ function layout() {
   const grouped = state.group === "team";
   const fresh = warm / n < .6 || grouped !== LAST_GROUPED;
   LAST_GROUPED = grouped;
-  const r = nodes.map(d => radius(d.id));
-  const k = Math.sqrt(W * H / Math.max(n, 6)) * (grouped ? .52 : .78);
+  const r = nodes.map(d => radius(d.id) / NODE_SCALE);   // unscaled radii; the fit below decides the scale
+  const big = state.size === "volume";
+  const k = Math.sqrt(W * H / Math.max(n, 6)) * (grouped ? .52 : .78) * (big ? 1.2 : 1);
   const cx = W / 2, cy = H / 2;
   const gid = nodes.map(d => d.group);
   const packGroups = (GX, GY, GR, gw, iters, t0) => {
@@ -1751,7 +1776,7 @@ function layout() {
       let d2 = vx * vx + vy * vy;
       if (d2 < .01) { vx = (hash(i + ":" + j) - .5); vy = .5 - hash(j + ":" + i); d2 = vx * vx + vy * vy; }
       const d = Math.sqrt(d2);
-      const min = r[i] + r[j] + 18;
+      const min = (r[i] + r[j]) * (big ? 1.25 : 1) + 18;
       let f = 0;
       if (d < cutoff && (!grouped || gid[i] === gid[j])) f = k * k / d;
       if (d < min) f += (min - d) * 3;
@@ -1769,6 +1794,7 @@ function layout() {
     for (let i = 0; i < n; i++) {
       const g = anchors ? anchors.get(gid[i]) : null;
       if (g) { DX[i] -= (X[i] - g.x) * 1.2; DY[i] -= (Y[i] - g.y) * 1.2; }
+      else if (nodes[i].id === VIEW.centered) { DX[i] -= (X[i] - cx) * 2; DY[i] -= (Y[i] - cy) * 2; }
       else { DX[i] -= (X[i] - cx) * .05 * (H / W); DY[i] -= (Y[i] - cy) * .05; }
       const len = Math.sqrt(DX[i] * DX[i] + DY[i] * DY[i]) || 1;
       const step = Math.min(len, temp);
@@ -1795,7 +1821,7 @@ function layout() {
   const s = Math.min((W - 2 * pad) / bw, (H - 2 * pad) / bh, 1.6);
   const sx = Math.min((W - 2 * pad) / bw, s * 1.45), sy = Math.min((H - 2 * pad) / bh, s * 1.45);   // a little stretch to use a wide or tall frame
   const ox = (W - bw * sx) / 2 - x0 * sx, oy = (H - bh * sy) / 2 - y0 * sy;
-  NODE_SCALE = Math.max(.68, Math.min(1, s * 1.1));
+  NODE_SCALE = big ? Math.max(.5, Math.min(1, s * 1.05)) : Math.max(.68, Math.min(1, s * 1.1));
   HULL_PAD = Math.max(6, Math.min(14, 14 * s));
   POS.clear();
   nodes.forEach((d, i) => POS.set(d.id, { x: X[i] * sx + ox, y: Y[i] * sy + oy }));
@@ -1827,7 +1853,8 @@ function nodeAria(n) {
   const conns = VIEW.adj.get(n.id)?.length || 0;
   const sig = nodeSignals(n.id).length;
   let where = n.type === "employee" ? n.dept : n.type === "external" ? n.firm : n.type === "trade" ? n.what : n.sub;
-  return `${n.label}, ${t}, ${where}. ${conns} connection${conns === 1 ? "" : "s"} in view.${sig ? ` ${sig} signal${sig === 1 ? "" : "s"}.` : ""}`;
+  const nm = VIEW.vol.get(n.id) || 0;
+  return `${n.label}, ${t}, ${where}. ${conns} connection${conns === 1 ? "" : "s"} and ${nm} message${nm === 1 ? "" : "s"} in view.${sig ? ` ${sig} signal${sig === 1 ? "" : "s"}.` : ""}`;
 }
 const edgeWidth = v => v.structural ? 1.6 : 1 + Math.min(4.2, Math.sqrt(v.cur) / 2.1);
 
@@ -1838,10 +1865,11 @@ function renderGraph() {
     const cls = ["edge", cross ? "is-cross" : "", v.structural ? "is-structural" : "", v.unmon ? "is-unmonitored" : "", edgeSignals(v.e.id).length ? "is-signal" : ""].join(" ");
     const w = edgeWidth(v);
     const tot = v.ab + v.ba || 1;
-    const head = n => { if (!n) return null; const L = v.structural ? 6 : 4 + w * 1 + 7 * n / tot, H = L * .48; return `M0 0 L${(-L).toFixed(1)} ${(-H).toFixed(1)} L${(-L).toFixed(1)} ${H.toFixed(1)}Z`; };
+    const hl = n => (v.structural ? 6 : 4 + w * 1 + 7 * n / tot).toFixed(1);
+    const head = n => { if (!n) return null; const L = Number(hl(n)), H = L * .48; return `M0 0 L${(-L).toFixed(1)} ${(-H).toFixed(1)} L${(-L).toFixed(1)} ${H.toFixed(1)}Z`; };
     const hb = head(v.ab), ha = head(v.ba);
     const tip = v.structural ? `${name(v.e.a)} ${STRUCT_REL[v.e.kind].toLowerCase()} ${name(v.e.b)}` : `${name(endOf(v.e.a))} → ${name(endOf(v.e.b))}: ${v.ab} · ${name(endOf(v.e.b))} → ${name(endOf(v.e.a))}: ${v.ba}. Click for the timeline.`;
-    return `<g class="${cls}" data-id="${esc(v.e.id)}"><title>${esc(tip)}</title><line class="edge-halo" style="stroke-width:${w + 5}px"/><line class="edge-line" style="stroke-width:${w}px"/><line class="edge-hit"/>${edgeSignals(v.e.id).length && !v.structural ? `<path class="edge-mark" d="M0 -5 L5 0 L0 5 L-5 0Z"/>` : ""}${hb ? `<path class="edge-arrow" data-end="b" d="${hb}"/>` : ""}${ha ? `<path class="edge-arrow" data-end="a" d="${ha}"/>` : ""}</g>`;
+    return `<g class="${cls}" data-id="${esc(v.e.id)}"><title>${esc(tip)}</title><line class="edge-halo" style="stroke-width:${w + 5}px"/><g class="edge-vis"><line class="edge-line" style="stroke-width:${w}px"/>${hb ? `<path class="edge-arrow" data-end="b" data-len="${hl(v.ab)}" d="${hb}"/>` : ""}${ha ? `<path class="edge-arrow" data-end="a" data-len="${hl(v.ba)}" d="${ha}"/>` : ""}</g><line class="edge-hit"/>${edgeSignals(v.e.id).length && !v.structural ? `<path class="edge-mark" d="M0 -5 L5 0 L0 5 L-5 0Z"/>` : ""}</g>`;
   }).join("");
   nodesG.innerHTML = VIEW.nodes.map(n => {
     const r = radius(n.id);
@@ -1868,6 +1896,10 @@ function place(pos, scales) {
     const el = edgeEls.get(v.e.id); if (!el) continue;
     const a = pos.get(v.e.a), b = pos.get(v.e.b); if (!a || !b) continue;
     for (const ln of el.querySelectorAll("line")) { ln.setAttribute("x1", a.x); ln.setAttribute("y1", a.y); ln.setAttribute("x2", b.x); ln.setAttribute("y2", b.y); }
+    { const ln = el.querySelector(".edge-line"), dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1;
+      const cut = end => { const ar = el.querySelector(`.edge-arrow[data-end="${end}"]`); if (!ar) return 0; const sc = scales ? scales.get(end === "b" ? v.e.b : v.e.a) : 1; return radius(end === "b" ? v.e.b : v.e.a) * sc + 3 + Number(ar.dataset.len) * .9; };
+      const ca = Math.min(d / 2, cut("a")), cb = Math.min(d / 2, cut("b"));
+      if (d > radius(v.e.a) + radius(v.e.b) + 14) { ln.setAttribute("x1", a.x + dx / d * ca); ln.setAttribute("y1", a.y + dy / d * ca); ln.setAttribute("x2", b.x - dx / d * cb); ln.setAttribute("y2", b.y - dy / d * cb); } }
     const mk = el.querySelector(".edge-mark");
     if (mk) mk.setAttribute("transform", `translate(${((a.x + b.x) / 2).toFixed(1)} ${((a.y + b.y) / 2).toFixed(1)})`);
     for (const ar of el.querySelectorAll(".edge-arrow")) {
@@ -1970,7 +2002,8 @@ function relatedSets() {
 }
 function applyHighlight() {
   const { nodes, edges } = relatedSets();
-  svg.classList.toggle("has-selection", !!state.sel);
+  /* When the selection is the resource the graph is built around, everything in view relates to it, so nothing dims. */
+  svg.classList.toggle("has-selection", !!state.sel && !(state.sel.kind === "node" && state.sel.id === VIEW.centered));
   svg.classList.toggle("is-grouped", state.group === "team");
   for (const [id, el] of nodeEls) {
     const selected = state.sel?.kind === "node" && state.sel.id === id;
@@ -1989,7 +2022,7 @@ function applyHighlight() {
 }
 function updateLabels() {
   const show = new Set();
-  if (state.labels) VIEW.nodes.forEach(n => show.add(n.id));
+  if (state.labels || VIEW.nodes.length <= 15) VIEW.nodes.forEach(n => show.add(n.id));
   else {
     VIEW.rank.slice(0, 8).forEach(n => show.add(n.id));
     VIEW.nodes.forEach(n => { if (nodeSignals(n.id).length) show.add(n.id); });
@@ -2011,6 +2044,7 @@ function renderLegend() {
     types.map(t => `<li>${glyph(t.id)}${esc(t.one)}</li>`).join("") +
     `<li>${line("")}Captured channel</li>` +
     `<li>${line("6 5", 2, "butt")}Some traffic not captured</li>` +
+    (state.size === "volume" ? `<li><svg viewBox="-10 -10 20 20" aria-hidden="true"><circle cx="-5" r="3" fill="currentColor"/><circle cx="3.5" r="6" fill="currentColor"/></svg>Bigger node, more messages</li>` : "") +
     `<li>${line(".1 4.5", 1.8)}Owns, uses, or traded</li>` +
     `<li><svg class="line-swatch" viewBox="0 0 28 10" aria-hidden="true"><line x1="6" y1="5" x2="22" y2="5" stroke="currentColor" stroke-width="1.6"/><path d="M27 5 L18 .8 L18 9.2Z M1 5 L7 2.2 L7 7.8Z" fill="currentColor"/></svg>Bigger arrow, more messages that way</li>` +
     `<li><svg viewBox="-10 -10 20 20" aria-hidden="true"><circle r="4" fill="currentColor"/><circle r="7.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 2.5"/></svg>Has a signal</li>`;
@@ -2276,12 +2310,18 @@ function select(sel, { say = true, focusTitle = false } = {}) {
     announce(`${s.title}, ${sevWord(s.sev).toLowerCase()} severity. ${s.detail}`);
   }
 }
-function centerOn(id) {
+function centerOn(id, { refocus = false } = {}) {
   state.center = id || "";
   state.sel = id ? { kind: "node", id } : state.sel;
   if (id) focusId = id;
   resetZoom();
   update();
+  if (refocus && id) requestAnimationFrame(() => moveFocus(id, false));
+}
+/* Selecting a resource rebuilds the graph around it; selecting the center again just clears the selection. */
+function pickNode(id, opts) {
+  if (state.center === id) return select(state.sel?.kind === "node" && state.sel.id === id ? null : { kind: "node", id });
+  centerOn(id, opts);
 }
 
 /* ======================================================================
@@ -2304,7 +2344,8 @@ function renderControls() {
   sel.innerHTML = opts.join("");
   sel.value = state.center || "";
   $("limitRange").value = state.limit; $("limitOut").textContent = state.limit;
-  for (const b of document.querySelectorAll(".segmented button")) b.setAttribute("aria-pressed", String(b.dataset.group === state.group));
+  for (const b of document.querySelectorAll("[data-group]")) b.setAttribute("aria-pressed", String(b.dataset.group === state.group));
+  for (const b of document.querySelectorAll("[data-size]")) b.setAttribute("aria-pressed", String(b.dataset.size === state.size));
   $("labelsButton").setAttribute("aria-pressed", String(state.labels));
 }
 
@@ -2335,10 +2376,17 @@ $("channelChips").addEventListener("click", ev => {
 $("centerSelect").addEventListener("change", ev => centerOn(ev.target.value));
 let limitTimer;
 $("limitRange").addEventListener("input", ev => {
-  state.limit = Math.min(50, Math.max(10, Number(ev.target.value)));
+  state.limit = Math.min(30, Math.max(5, Number(ev.target.value)));
   $("limitOut").textContent = state.limit;
   clearTimeout(limitTimer);
   limitTimer = setTimeout(() => update(), 120);
+});
+$("sizeSeg").addEventListener("click", ev => {
+  const b = ev.target.closest("[data-size]"); if (!b || b.dataset.size === state.size) return;
+  state.size = b.dataset.size;
+  update();
+  keepFocus(`[data-size="${state.size}"]`);
+  announce(state.size === "volume" ? "Node size now shows message volume: the more messages a resource has in view, the bigger it is." : "Standard node size.");
 });
 document.querySelector(".segmented").addEventListener("click", ev => {
   const b = ev.target.closest("[data-group]"); if (!b || b.dataset.group === state.group) return;
@@ -2360,7 +2408,7 @@ document.addEventListener("click", ev => {
   if (t.dataset.center) return centerOn(t.dataset.center);
   if (t.dataset.signal) return select({ kind: "signal", id: t.dataset.signal }, { focusTitle: true });
   if (t.dataset.edge) return select({ kind: "edge", id: t.dataset.edge }, { focusTitle: true });
-  if (t.dataset.node) return select({ kind: "node", id: t.dataset.node }, { focusTitle: true });
+  if (t.dataset.node) { pickNode(t.dataset.node); return $("inspTitle")?.focus({ preventScroll: true }); }
 });
 
 /* View tabs */
@@ -2428,7 +2476,7 @@ svg.addEventListener("pointercancel", endPan);
 svg.addEventListener("click", ev => {
   if (moved) { moved = false; return; }
   const node = ev.target.closest(".node");
-  if (node) { const id = node.dataset.id; focusId = id; syncRoving(); select(state.sel?.kind === "node" && state.sel.id === id ? null : { kind: "node", id }); return; }
+  if (node) { const id = node.dataset.id; focusId = id; syncRoving(); pickNode(id); return; }
   const edge = ev.target.closest(".edge");
   if (edge) {
     const id = edge.dataset.id;
@@ -2484,7 +2532,7 @@ nodesG.addEventListener("keydown", ev => {
     }
     case "Enter": case " ":
       ev.preventDefault();
-      select(state.sel?.kind === "node" && state.sel.id === id ? null : { kind: "node", id });
+      pickNode(id, { refocus: true });
       break;
     case "n": case "N": {
       ev.preventDefault();
