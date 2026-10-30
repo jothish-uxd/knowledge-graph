@@ -22,7 +22,7 @@ The site is a single page, `index.html`. Open it in a browser; no build step.
 
 ## Sample data
 
-Calder & Wren, a fictional investment bank, over a 30-day window. Every name, number and message is invented. The data includes a few scripted stories (contact across an information barrier ahead of a research downgrade, a WeChat allocation request, a spike before a rates fix, a reporter on WhatsApp, an unattributed WhatsApp number) so each signal type has something to show.
+Coruscant Capital, a fictional investment bank staffed by Star Wars characters, over a 30-day window. Every message and number is invented. The data includes a few scripted stories (Lando and Jyn crossing the information barrier ahead of a Kuat Drive Yards downgrade, Qi’ra and the Hutt Cartel on WeChat, Hondo and Shu Mai before a rates fix, Han and a HoloNet reporter on WhatsApp, an unattributed WhatsApp number) so each signal type has something to show.
 
 ## Status
 

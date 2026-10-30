@@ -251,8 +251,14 @@
   .field { display: grid; min-width: 0; }
   .field label { display: flex; justify-content: space-between; gap: 12px; }
   .field output { font-family: var(--mono); font-weight: 500; color: var(--ink); }
+  .select-wrap { position: relative; display: inline-block; max-width: 100%; }
+  .select-wrap::after {
+    content: ""; position: absolute; right: 16px; top: 50%; width: 7px; height: 7px; pointer-events: none;
+    border-right: 1.5px solid var(--ink-soft); border-bottom: 1.5px solid var(--ink-soft); transform: translateY(-70%) rotate(45deg);
+  }
   .select {
-    height: 36px; min-width: 240px; max-width: 100%; padding: 0 32px 0 10px;
+    -webkit-appearance: none; appearance: none;
+    height: 36px; min-width: 240px; max-width: 100%; padding: 0 40px 0 10px;
     border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--bg); color: var(--ink);
     font: inherit; font-size: 14px; cursor: pointer;
   }
@@ -591,17 +597,18 @@
   .flow-node .glyph { width: 30px; height: 30px; margin-bottom: 4px; }
   .flow-node strong { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
   .flow-node span { font-size: 12px; color: var(--ink-soft); }
-  .flow-arrows { display: grid; gap: 20px; min-width: 0; }
-  .flow-arrow { display: grid; gap: 6px; }
-  .flow-label { font-size: 12.5px; color: var(--ink-soft); text-align: center; }
+  .flow-arrows { display: grid; gap: 10px; min-width: 0; }
+  .flow-label { font-size: 12.5px; color: var(--ink-soft); }
+  .flow-label.is-top { text-align: right; }
+  .flow-label.is-bottom { text-align: left; }
+  .flow-label.is-zero { color: var(--ink-faint); }
   .flow-label strong { color: var(--ink); font-family: var(--mono); font-weight: 500; }
-  .flow-line { display: flex; align-items: center; }
-  .flow-line .shaft { flex: 1; height: var(--t); background: var(--ink); border-radius: 1px; }
-  .flow-line .head { flex: none; width: 0; height: 0; border-top: calc(var(--t) * .8 + 6px) solid transparent; border-bottom: calc(var(--t) * .8 + 6px) solid transparent; border-left: calc(var(--t) * 1.2 + 11px) solid var(--ink); }
-  .flow-arrow.is-rev .flow-line { flex-direction: row-reverse; }
-  .flow-arrow.is-rev .head { border-left: 0; border-right: calc(var(--t) * 1.2 + 11px) solid var(--ink); }
-  .flow-arrow.is-empty .shaft { height: 0; background: none; border-top: 1.5px dashed var(--rule-strong); }
-  .flow-arrow.is-empty .head { display: none; }
+  .flow-line { display: flex; align-items: center; min-height: 44px; }
+  .flow-line .shaft { flex: 1; height: 3px; background: var(--ink); }
+  .flow-line .cap { flex: none; width: 3px; height: 14px; background: var(--ink); }
+  .flow-line .head { flex: none; width: 0; height: 0; border-top: var(--h) solid transparent; border-bottom: var(--h) solid transparent; }
+  .flow-line .head.is-right { border-left: calc(var(--h) * 1.45) solid var(--ink); }
+  .flow-line .head.is-left { border-right: calc(var(--h) * 1.45) solid var(--ink); }
   .flow-table th.num, .flow-table td.num { text-align: right; font-family: var(--mono); }
 
   .anom-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
@@ -692,7 +699,7 @@
     .top-nav { order: 3; flex: 0 0 calc(100% + 48px); margin: 0 -24px; padding: 0 14px; overflow-x: auto; height: 44px; border-top: 1px solid var(--rule); }
     .main { padding-top: 48px; }
     .toolbar-row .text-button { margin-left: 0; }
-    .select { min-width: 0; width: 100%; }
+    .select { min-width: 0; width: 100%; } .select-wrap { display: block; }
     .toolbar-row > .field { flex: 1 1 100%; }
     .range-field input { width: 100%; }
     .stage-bar { flex-wrap: wrap; }
@@ -812,7 +819,7 @@
 
   <section class="doc-section" aria-labelledby="h-status">
     <h2 id="h-status">Status</h2>
-    <p>v0.1 preview. Single page, no build step. The sample data is a fictional investment bank, Calder &amp; Wren, over a 30-day window. Every name, number and message is invented.</p>
+    <p>v0.1 preview. Single page, no build step. The sample data is a fictional investment bank, Coruscant Capital, over a 30-day window. Every name, number and message is invented.</p>
   </section>
 
   <p class="footer">Knowledge Graph · a design exploration in the style of Accessible Charts and Enterprise Library.</p>
@@ -822,7 +829,7 @@
 <section class="panel" id="explorer" aria-labelledby="h-explorer" hidden>
   <div class="explorer-head">
     <div>
-      <p class="page-kicker">Explorer · Calder &amp; Wren · last 30 days</p>
+      <p class="page-kicker">Explorer · Coruscant Capital · last 30 days</p>
       <h1 class="page-title" id="h-explorer" tabindex="-1">Relationship graph</h1>
       <p class="page-lede">Choose which resources to map and which channels to count. The graph shows up to 50 at a time, strongest signals first.</p>
     </div>
@@ -840,7 +847,7 @@
     <div class="toolbar-row">
       <div class="field">
         <label for="centerSelect">Center on</label>
-        <select class="select" id="centerSelect"></select>
+        <span class="select-wrap"><select class="select" id="centerSelect"></select></span>
       </div>
       <div class="field range-field">
         <label for="limitRange">Node limit <output id="limitOut" for="limitRange">50</output></label>
@@ -1035,7 +1042,7 @@
     <h2 id="h-rules">Rules</h2>
     <ul class="a11y-list">
       <li><strong>Nothing depends on color.</strong> Resource types differ by shape and fill pattern; captured and uncaptured traffic differ by solid and dashed lines; signals add a dashed ring and a diamond on the line.</li>
-      <li><strong>Every resource has a full name.</strong> For example: “Marcus Hale, employee, Equity Trading. 9 connections in view. 4 signals.”</li>
+      <li><strong>Every resource has a full name.</strong> For example: “Lando Calrissian, employee, Equity Trading. 9 connections in view. 4 signals.”</li>
       <li><strong>Changes are announced once.</strong> Filters, limits and selection each produce one polite announcement, shown in the strip under the graph.</li>
       <li><strong>The cap is spoken.</strong> When resources are hidden, the status and the announcement both say how many and how they were ranked.</li>
       <li><strong>Motion is optional.</strong> Layout changes animate briefly, and not at all with reduced motion on.</li>
@@ -1084,7 +1091,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;"
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 /* ======================================================================
-   Sample data: Calder & Wren, a fictional investment bank. 30-day window.
+   Sample data: Coruscant Capital, a fictional investment bank. 30-day window.
    ====================================================================== */
 function mulberry(seed) {
   return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -1108,36 +1115,36 @@ const STRUCT_REL = { owns: "OWNS", uses: "USES", exec: "EXECUTED", mention: "MEN
 
 const DEPT = { EQ: "Equity Trading", RS: "Research", FI: "Fixed Income", SL: "Sales", WM: "Wealth Management", OP: "Operations", CO: "Compliance", TE: "Technology", EX: "Executive office" };
 const EMP = [
-  ["marcus", "Marcus Hale", "EQ", "Senior trader"], ["dana", "Dana Okafor", "EQ", "Trader"], ["felix", "Felix Moreau", "EQ", "Trader"],
-  ["sienna", "Sienna Park", "EQ", "Desk head", 1], ["ravi", "Ravi Menon", "EQ", "Execution trader"], ["hannah", "Hannah Lund", "EQ", "Junior trader"],
-  ["priya", "Priya Natarajan", "RS", "Equity analyst"], ["owen", "Owen Fitzgerald", "RS", "Head of research", 1], ["mei", "Mei Tanaka", "RS", "Credit analyst"], ["jonah", "Jonah Abrams", "RS", "Research associate"],
-  ["tom", "Tom Becker", "FI", "Rates trader"], ["leila", "Leila Haddad", "FI", "Credit trader"], ["gustavo", "Gustavo Ruiz", "FI", "Desk head", 1], ["ines", "Ines Kowalski", "FI", "FX trader"], ["sam", "Sam Whitaker", "FI", "Structurer"],
-  ["lin", "Lin Wei", "SL", "Institutional sales"], ["chloe", "Chloe Martin", "SL", "Institutional sales"], ["arjun", "Arjun Kapoor", "SL", "Head of sales", 1], ["zoe", "Zoe Lambert", "SL", "Sales trader"], ["mateo", "Mateo Silva", "SL", "Sales associate"],
-  ["grace", "Grace Holloway", "WM", "Wealth advisor"], ["nikhil", "Nikhil Rao", "WM", "Wealth advisor"], ["amara", "Amara Diallo", "WM", "Team lead", 1], ["ben", "Ben Carver", "WM", "Associate"],
-  ["ruth", "Ruth Adeyemi", "OP", "Trade support"], ["kenji", "Kenji Mori", "OP", "Settlements"], ["laura", "Laura Brennan", "OP", "Operations lead", 1], ["victor", "Victor Petrov", "OP", "Middle office"],
-  ["elena", "Elena Vasquez", "CO", "Chief compliance officer", 1], ["david", "David Kim", "CO", "Surveillance analyst"], ["fiona", "Fiona Grant", "CO", "Compliance officer"],
-  ["aaron", "Aaron Blake", "TE", "Platform engineer"], ["nadia", "Nadia Rahman", "TE", "Data engineer"],
-  ["charles", "Charles Whitman", "EX", "Managing director", 1], ["sofia", "Sofia Ricci", "EX", "Chief operating officer", 1],
+  ["marcus", "Lando Calrissian", "EQ", "Senior trader"], ["dana", "Wedge Antilles", "EQ", "Trader"], ["felix", "Han Solo", "EQ", "Trader"],
+  ["sienna", "Hera Syndulla", "EQ", "Desk head", 1], ["ravi", "Poe Dameron", "EQ", "Execution trader"], ["hannah", "Kaydel Connix", "EQ", "Junior trader"],
+  ["priya", "Jyn Erso", "RS", "Equity analyst"], ["owen", "Obi-Wan Kenobi", "RS", "Head of research", 1], ["mei", "Ahsoka Tano", "RS", "Credit analyst"], ["jonah", "Cassian Andor", "RS", "Research associate"],
+  ["tom", "Hondo Ohnaka", "FI", "Rates trader"], ["leila", "Padmé Amidala", "FI", "Credit trader"], ["gustavo", "Mace Windu", "FI", "Desk head", 1], ["ines", "Sabine Wren", "FI", "FX trader"], ["sam", "Kanan Jarrus", "FI", "Structurer"],
+  ["lin", "Qi’ra Corellia", "SL", "Institutional sales"], ["chloe", "Leia Organa", "SL", "Institutional sales"], ["arjun", "Bail Organa", "SL", "Head of sales", 1], ["zoe", "Enfys Nest", "SL", "Sales trader"], ["mateo", "Ezra Bridger", "SL", "Sales associate"],
+  ["grace", "Tobias Beckett", "WM", "Wealth advisor"], ["nikhil", "Garazeb Orrelios", "WM", "Wealth advisor"], ["amara", "Luthen Rael", "WM", "Team lead", 1], ["ben", "Bodhi Rook", "WM", "Associate"],
+  ["ruth", "Nien Nunb", "OP", "Trade support"], ["kenji", "Kino Loy", "OP", "Settlements"], ["laura", "Jan Dodonna", "OP", "Operations lead", 1], ["victor", "Bix Caleen", "OP", "Middle office"],
+  ["elena", "Mon Mothma", "CO", "Chief compliance officer", 1], ["david", "Luke Skywalker", "CO", "Surveillance analyst"], ["fiona", "Vel Sartha", "CO", "Compliance officer"],
+  ["aaron", "Rose Tico", "TE", "Platform engineer"], ["nadia", "Paige Tico", "TE", "Data engineer"],
+  ["charles", "Wilhuff Tarkin", "EX", "Managing director", 1], ["sofia", "Lyra Erso", "EX", "Chief operating officer", 1],
 ];
 const EXT = [
-  ["jack", "Jack Thornton", "Brightwater Capital", "Broker", "fund", ["dana", "zoe"]],
-  ["maya", "Maya Ellison", "Brightwater Capital", "Portfolio manager", "fund", ["arjun", "chloe"]],
-  ["henry", "Henry Cole", "Marlowe Partners", "Partner", "fund", ["gustavo"]],
-  ["rosa", "Rosa Jimenez", "Marlowe Partners", "Analyst", "fund", ["owen", "mei"]],
-  ["isaac", "Isaac Novak", "Kestrel Asset Management", "Portfolio manager", "fund", ["chloe", "mateo"]],
-  ["tara", "Tara Quinn", "Kestrel Asset Management", "Trader", "fund", ["ravi", "zoe"]],
-  ["sven", "Sven Dahl", "Kestrel Asset Management", "Credit portfolio manager", "fund", ["leila"]],
-  ["zhang", "Zhang Hao", "Osprey Holdings", "Director", "fund", ["arjun"]],
-  ["wuling", "Wu Ling", "Osprey Holdings", "Treasury manager", "fund", []],
-  ["patrick", "Patrick Doyle", "Tidewell Fund", "Chief investment officer", "fund", ["arjun", "charles"]],
-  ["ava", "Ava Sinclair", "Tidewell Fund", "Analyst", "fund", ["priya", "mateo"]],
-  ["omar", "Omar Farouk", "Halden Bank", "Counterparty desk", "bank", ["ines", "kenji"]],
-  ["ellen", "Ellen Byrne", "Halden Bank", "Operations", "bank", ["laura"]],
-  ["ashby", "Richard Ashby", "Private clients", "Private client", "private", ["ben"]],
-  ["diane", "Diane Mercer", "Private clients", "Private client", "private", ["nikhil"]],
-  ["lucas", "Lucas Brandt", "Private clients", "Private client", "private", ["amara", "ben"]],
-  ["pete", "Pete Lawson", "Corelink Systems", "Vendor account manager", "vendor", ["aaron", "nadia"]],
-  ["kate", "Kate Morrow", "Northgate Media", "Reporter", "media", []],
+  ["jack", "Nute Gunray", "Trade Federation", "Broker", "fund", ["dana", "zoe"]],
+  ["maya", "Rune Haako", "Trade Federation", "Portfolio manager", "fund", ["arjun", "chloe"]],
+  ["henry", "Shu Mai", "Commerce Guild", "Partner", "fund", ["gustavo"]],
+  ["rosa", "Lott Dod", "Commerce Guild", "Analyst", "fund", ["owen", "mei"]],
+  ["isaac", "Wat Tambor", "Techno Union", "Portfolio manager", "fund", ["chloe", "mateo"]],
+  ["tara", "Aurra Sing", "Techno Union", "Trader", "fund", ["ravi", "zoe"]],
+  ["sven", "Cad Bane", "Techno Union", "Credit portfolio manager", "fund", ["leila"]],
+  ["zhang", "Jabba Desilijic", "Hutt Cartel", "Director", "fund", ["arjun"]],
+  ["wuling", "Ziro Desilijic", "Hutt Cartel", "Treasury manager", "fund", []],
+  ["patrick", "Passel Argente", "Corporate Alliance", "Chief investment officer", "fund", ["arjun", "charles"]],
+  ["ava", "Denaria Kee", "Corporate Alliance", "Analyst", "fund", ["priya", "mateo"]],
+  ["omar", "San Hill", "InterGalactic Banking Clan", "Counterparty desk", "bank", ["ines", "kenji"]],
+  ["ellen", "Rush Clovis", "InterGalactic Banking Clan", "Operations", "bank", ["laura"]],
+  ["ashby", "Dryden Vos", "Private clients", "Private client", "private", ["ben"]],
+  ["diane", "Maz Kanata", "Private clients", "Private client", "private", ["nikhil"]],
+  ["lucas", "Bib Fortuna", "Private clients", "Private client", "private", ["amara", "ben"]],
+  ["pete", "Babu Frik", "Cybot Galactica", "Vendor account manager", "vendor", ["aaron", "nadia"]],
+  ["kate", "Sana Starros", "HoloNet News", "Reporter", "media", []],
 ];
 /* WhatsApp registered for capture: the wealth team's approved program. Everyone else's isn't. */
 const REGISTERED_WA = new Set(["e-grace", "e-nikhil", "e-amara"]);
@@ -1204,13 +1211,13 @@ function S(a, b, chs, opts = {}) {
   if (opts.out != null) real.dir = real.a === ida ? opts.out : 1 - opts.out;
   return real;
 }
-S("marcus", "x:jack", { Bloomberg: [34, 26], Voice: [6, 4] }, { thread: "nvsm", sentiment: .3, out: .45, burst: [["2026-10-05", .3, 480, 700, "Bloomberg"]], lines: ["Any axes on NVSM?", "Working it.", "Let me see where research is landing.", "Done."] });
+S("marcus", "x:jack", { Bloomberg: [34, 26], Voice: [6, 4] }, { thread: "nvsm", sentiment: .3, out: .45, burst: [["2026-10-05", .3, 480, 700, "Bloomberg"]], lines: ["Any axes on KDY?", "Working it.", "Let me see where research is landing.", "Done."] });
 S("marcus", "priya", { WhatsApp: [41, 6], Teams: [3, 2] }, { thread: "nvsm", sentiment: -.1, out: .6, burst: [["2026-10-05", .42, 470, 620, "WhatsApp"], ["2026-10-06", .22, 1230, 1400, "WhatsApp"]], lines: ["Any update on the note?", "Call me when you’re out.", "Is it still this week?", "Delete this after you read it.", "Thanks. Keep this between us."] });
 S("marcus", "ruth", { Email: [12, 10], Teams: [6, 7] }, { thread: "nvsm", files: 2, sentiment: .1 });
 S("lin", "x:zhang", { WeChat: [28, 9], Email: [5, 4] }, { thread: "osprey", translated: true, sentiment: .4, out: .35, burst: [["2026-10-20", .4, 540, 660, "WeChat"], ["2026-10-21", .18, 1290, 1420, "WeChat"]], lines: ["Can you make sure we’re looked after?", "Received, thanks.", "Let’s keep this here.", "I’ll talk to the desk."] });
 S("lin", "x:wuling", { WeChat: [9, 8], Email: [4, 5] }, { translated: true, sentiment: .2 });
 S("lin", "zoe", { Teams: [22, 18], Email: [3, 4] }, { thread: "osprey", sentiment: .2, out: .7 });
-S("tom", "x:henry", { Bloomberg: [52, 11], Voice: [9, 3] }, { thread: "rates", sentiment: .5, out: .3, burst: [["2026-10-22", .35, 920, 962, "Bloomberg"]], lines: ["Where are you marking 10s?", "Keep it tight into the fix.", "Done.", "We’re square."] });
+S("tom", "x:henry", { Bloomberg: [52, 11], Voice: [9, 3] }, { thread: "rates", sentiment: .5, out: .3, burst: [["2026-10-22", .35, 920, 962, "Bloomberg"]], lines: ["Where are you marking the 10s?", "Keep it tight into the fix.", "Done.", "We’re square."] });
 S("mei", "leila", { Teams: [8, 2] }, { approved: true, sentiment: .1, out: .5 });
 S("grace", "x:ashby", { SMS: [22, 3], Voice: [4, 4], Email: [6, 5] }, { sentiment: .3, out: .4, burst: [["2026-10-15", .55, 1230, 1385, "SMS"]], lines: ["Can you move it before the statement date?", "Don’t mention this to compliance.", "Text me, not email.", "Ok, done."] });
 S("grace", "x:diane", { WhatsApp: [11, 9], Email: [5, 6] }, { sentiment: .5 });
@@ -1276,15 +1283,15 @@ Object.assign(unknownEdge, { dir: 0, burst: [["2026-10-06", .35, 1290, 1425], ["
 
 /* Trades */
 const TRADES = [
-  ["40417", "NVSM block · 250,000 shares", "marcus", ["x:jack", "priya", "ruth"]],
-  ["40422", "10-year Treasuries · $40m", "tom", ["x:henry", "kenji"]],
-  ["40398", "Osprey new-issue allocation", "zoe", ["lin", "x:zhang"]],
-  ["40401", "HLX equity · 80,000 shares", "dana", ["x:tara", "ruth"]],
-  ["40405", "KWR 2031 corporate bond", "leila", ["x:sven", "victor"]],
-  ["40409", "EUR/USD FX swap", "ines", ["x:omar", "kenji"]],
-  ["40411", "ORLN block · 120,000 shares", "felix", ["ravi"]],
-  ["40414", "Municipal ladder · Ashby account", "grace", ["x:ashby", "laura"]],
-  ["40419", "Structured note · Tidewell", "sam", ["x:patrick", "arjun"]],
+  ["40417", "KDY block · 250,000 shares", "marcus", ["x:jack", "priya", "ruth"]],
+  ["40422", "10-year Republic bonds · 40m credits", "tom", ["x:henry", "kenji"]],
+  ["40398", "Hutt Cartel new-issue allocation", "zoe", ["lin", "x:zhang"]],
+  ["40401", "SoroSuub equity · 80,000 shares", "dana", ["x:tara", "ruth"]],
+  ["40405", "Corellian Engineering 2031 bond", "leila", ["x:sven", "victor"]],
+  ["40409", "Credit/peggat FX swap", "ines", ["x:omar", "kenji"]],
+  ["40411", "Incom block · 120,000 shares", "felix", ["ravi"]],
+  ["40414", "Planetary bond ladder · Vos account", "grace", ["x:ashby", "laura"]],
+  ["40419", "Structured note · Corporate Alliance", "sam", ["x:patrick", "arjun"]],
   ["40420", "5-year rates swap", "gustavo", ["x:henry"]],
 ];
 const pid = s => s.startsWith("x:") ? "x-" + s.slice(2) : "e-" + s;
@@ -1297,30 +1304,30 @@ for (const [num, what, exec, mentions] of TRADES) {
 
 /* Threads: one conversation, many channels. */
 const THREADS = {
-  nvsm: { title: "Northvale Semiconductor block", note: "The WhatsApp messages came from a device collection on 14 October, not live capture.", steps: [
-    { t: "Mon 08:12", ch: "Bloomberg", from: "x-jack", to: "e-marcus", text: "Client wants to move a large NVSM block before Thursday. Interested?" },
+  nvsm: { title: "Kuat Drive Yards block", note: "The WhatsApp messages came from a device collection on 14 October, not live capture.", steps: [
+    { t: "Mon 08:12", ch: "Bloomberg", from: "x-jack", to: "e-marcus", text: "Client wants to move a large KDY block before Thursday. Interested?" },
     { t: "Mon 08:20", ch: "Bloomberg", from: "e-marcus", to: "x-jack", text: "Maybe. Let me see where research is landing first." },
-    { t: "Mon 08:41", ch: "WhatsApp", from: "e-marcus", to: "e-priya", text: "Is the NVSM note going out this week?" },
+    { t: "Mon 08:41", ch: "WhatsApp", from: "e-marcus", to: "e-priya", text: "Is the KDY note going out this week?" },
     { t: "Mon 08:55", ch: "WhatsApp", from: "e-priya", to: "e-marcus", text: "Can’t say here. I’ll call you after the morning meeting." },
     { t: "Mon 09:32", ch: "WhatsApp", from: "e-priya", to: "e-marcus", text: "Voice call, 6 minutes. Not recorded.", call: true },
     { t: "Mon 11:02", ch: "Bloomberg", from: "e-marcus", to: "x-jack", text: "We’re in. Send the details." },
-    { t: "Tue 11:47", ch: "Email", from: "e-marcus", to: "e-ruth", text: "Please book TR-40417: NVSM, 250,000 shares, Brightwater." },
-    { t: "Wed 07:00", ch: "Research", system: true, text: "Research publishes a downgrade of Northvale Semiconductor to Sell. Analyst: Priya Natarajan." },
+    { t: "Tue 11:47", ch: "Email", from: "e-marcus", to: "e-ruth", text: "Please book TR-40417: KDY, 250,000 shares, Trade Federation." },
+    { t: "Wed 07:00", ch: "Research", system: true, text: "Research publishes a downgrade of Kuat Drive Yards to Sell. Analyst: Jyn Erso." },
   ] },
-  osprey: { title: "Osprey new-issue allocation", note: "WeChat messages were machine-translated from Mandarin before review.", steps: [
+  osprey: { title: "Hutt Cartel new-issue allocation", note: "WeChat messages were machine-translated from Huttese before review.", steps: [
     { t: "Tue 09:05", ch: "Email", from: "e-lin", to: "x-zhang", text: "Attached is the allocation summary for the new issue." },
-    { t: "Tue 09:40", ch: "WeChat", from: "x-zhang", to: "e-lin", text: "Can you make sure we end up with more than the summary says?", tr: "Mandarin" },
-    { t: "Tue 09:52", ch: "WeChat", from: "e-lin", to: "x-zhang", text: "I’ll talk to the desk. Let’s keep this here.", tr: "Mandarin" },
-    { t: "Tue 10:15", ch: "Teams", from: "e-lin", to: "e-zoe", text: "Can we bump Osprey on the new issue? Important relationship." },
+    { t: "Tue 09:40", ch: "WeChat", from: "x-zhang", to: "e-lin", text: "Can you make sure we end up with more than the summary says?", tr: "Huttese" },
+    { t: "Tue 09:52", ch: "WeChat", from: "e-lin", to: "x-zhang", text: "I’ll talk to the desk. Let’s keep this here.", tr: "Huttese" },
+    { t: "Tue 10:15", ch: "Teams", from: "e-lin", to: "e-zoe", text: "Can we bump the Hutts on the new issue? Important relationship." },
     { t: "Tue 10:31", ch: "Teams", from: "e-zoe", to: "e-lin", text: "Book’s already set. I’ll see what I can do." },
-    { t: "Wed 16:20", ch: "Trade", system: true, text: "TR-40398 books Osprey’s allocation 40% above the indicated size." },
+    { t: "Wed 16:20", ch: "Trade", system: true, text: "TR-40398 books the Hutt Cartel’s allocation 40% above the indicated size." },
   ] },
   rates: { title: "10-year marks into the fix", steps: [
-    { t: "Thu 15:41", ch: "Bloomberg", from: "x-henry", to: "e-tom", text: "Where are you marking 10s into the close?" },
+    { t: "Thu 15:41", ch: "Bloomberg", from: "x-henry", to: "e-tom", text: "Where are you marking the 10s into the close?" },
     { t: "Thu 15:43", ch: "Bloomberg", from: "e-tom", to: "x-henry", text: "Depends who’s asking." },
     { t: "Thu 15:44", ch: "Voice", from: "x-henry", to: "e-tom", text: "Recorded line, 4 minutes.", call: true },
     { t: "Thu 15:58", ch: "Bloomberg", from: "x-henry", to: "e-tom", text: "Keep it tight into the fix and we’re square." },
-    { t: "Thu 16:02", ch: "Trade", system: true, text: "TR-40422 executes: 10-year Treasuries, $40m, two minutes before the fix." },
+    { t: "Thu 16:02", ch: "Trade", system: true, text: "TR-40422 executes: 10-year Republic bonds, 40m credits, two minutes before the fix." },
   ] },
   press: { title: "Reporter contact", note: "A first contact with a reporter, on a personal WhatsApp account.", steps: [
     { t: "Fri 21:14", ch: "WhatsApp", from: "x-kate", to: "e-felix", text: "Hearing the desk had a big week. Anything for background?" },
@@ -1378,7 +1385,7 @@ for (const [tid, th] of Object.entries(THREADS)) {
   addSignal("hop", `“${th.title}” moved ${path.join(" → ")}, in and out of captured channels.`, edges.flatMap(e => [e.id, ...e.derived]), edges.flatMap(e => [e.a, e.b, ...derivedNodes(e)]), { thread: tid });
 }
 addSignal("ahead", "TR-40417 was executed Tuesday after WhatsApp contact with the analyst. Her downgrade published Wednesday.", [], ["t:40417"]);
-addSignal("unattributed", `A Hong Kong WhatsApp number with no known owner sent 17 messages to Marcus Hale’s personal WhatsApp this period.`, [unknownEdge.id], [unknownEdge.a, unknownEdge.b]);
+addSignal("unattributed", `A WhatsApp number with no known owner sent 17 messages to Lando Calrissian’s personal WhatsApp this period.`, [unknownEdge.id], [unknownEdge.a, unknownEdge.b]);
 
 const SIG_BY_NODE = new Map(), SIG_BY_EDGE = new Map();
 for (const s of SIGNALS) {
@@ -1450,7 +1457,7 @@ function genMessages(e) {
       if (burst && e.lines && rnd() < .55) L = { text: pick(rnd, e.lines) };
       else if (burst && flagged && personal && rnd() < .2) L = { text: pick(rnd, SECRET_LINES) };
       else L = lineFor(ch, rnd);
-      out.push({ day, min: Math.round(clamp(min, 0, 1439)), ch, from: ab ? A : B, to: ab ? B : A, ...L, tr: ch === "WeChat" && e.translated ? "Mandarin" : undefined });
+      out.push({ day, min: Math.round(clamp(min, 0, 1439)), ch, from: ab ? A : B, to: ab ? B : A, ...L, tr: ch === "WeChat" && e.translated ? "Huttese" : undefined });
     };
     for (const [iso, share, m0, m1, bch] of e.burst || []) {
       if (bch && bch !== ch) continue;
@@ -1496,7 +1503,7 @@ const POLICY = {
 const LEXICON = {
   secrecy: ["can’t say here", "not on here", "keep this here", "delete this", "delete after reading", "take this offline", "between us", "not the desk line", "can’t put that in", "don’t mention", "off the record", "text me, not email"],
   mnpi: ["note going out", "where research is landing", "update on the note", "ahead of the note"],
-  manip: ["keep it tight into the fix", "we’re square", "more than the summary", "looked after", "bump osprey"],
+  manip: ["keep it tight into the fix", "we’re square", "more than the summary", "looked after", "bump the hutts"],
 };
 const normq = s => s.toLowerCase().replace(/'/g, "’");
 const isEmp = id => NODES.get(id)?.type === "employee";
@@ -1831,7 +1838,7 @@ function renderGraph() {
     const cls = ["edge", cross ? "is-cross" : "", v.structural ? "is-structural" : "", v.unmon ? "is-unmonitored" : "", edgeSignals(v.e.id).length ? "is-signal" : ""].join(" ");
     const w = edgeWidth(v);
     const tot = v.ab + v.ba || 1;
-    const head = n => { if (!n) return null; const L = v.structural ? 6.5 : 4.5 + w * 1.1 + 8 * n / tot, H = L * .42; return `M0 0 L${(-L).toFixed(1)} ${(-H).toFixed(1)} L${(-L * .72).toFixed(1)} 0 L${(-L).toFixed(1)} ${H.toFixed(1)}Z`; };
+    const head = n => { if (!n) return null; const L = v.structural ? 6 : 4 + w * 1 + 7 * n / tot, H = L * .48; return `M0 0 L${(-L).toFixed(1)} ${(-H).toFixed(1)} L${(-L).toFixed(1)} ${H.toFixed(1)}Z`; };
     const hb = head(v.ab), ha = head(v.ba);
     const tip = v.structural ? `${name(v.e.a)} ${STRUCT_REL[v.e.kind].toLowerCase()} ${name(v.e.b)}` : `${name(endOf(v.e.a))} → ${name(endOf(v.e.b))}: ${v.ab} · ${name(endOf(v.e.b))} → ${name(endOf(v.e.a))}: ${v.ba}. Click for the timeline.`;
     return `<g class="${cls}" data-id="${esc(v.e.id)}"><title>${esc(tip)}</title><line class="edge-halo" style="stroke-width:${w + 5}px"/><line class="edge-line" style="stroke-width:${w}px"/><line class="edge-hit"/>${edgeSignals(v.e.id).length && !v.structural ? `<path class="edge-mark" d="M0 -5 L5 0 L0 5 L-5 0Z"/>` : ""}${hb ? `<path class="edge-arrow" data-end="b" d="${hb}"/>` : ""}${ha ? `<path class="edge-arrow" data-end="a" d="${ha}"/>` : ""}</g>`;
@@ -2005,7 +2012,7 @@ function renderLegend() {
     `<li>${line("")}Captured channel</li>` +
     `<li>${line("6 5", 2, "butt")}Some traffic not captured</li>` +
     `<li>${line(".1 4.5", 1.8)}Owns, uses, or traded</li>` +
-    `<li><svg class="line-swatch" viewBox="0 0 28 10" aria-hidden="true"><line x1="6" y1="5" x2="22" y2="5" stroke="currentColor" stroke-width="1.6"/><path d="M27 5 L17 1 L19.5 5 L17 9Z M1 5 L7 2.6 L5.6 5 L7 7.4Z" fill="currentColor"/></svg>Bigger arrow, more messages that way</li>` +
+    `<li><svg class="line-swatch" viewBox="0 0 28 10" aria-hidden="true"><line x1="6" y1="5" x2="22" y2="5" stroke="currentColor" stroke-width="1.6"/><path d="M27 5 L18 .8 L18 9.2Z M1 5 L7 2.2 L7 7.8Z" fill="currentColor"/></svg>Bigger arrow, more messages that way</li>` +
     `<li><svg viewBox="-10 -10 20 20" aria-hidden="true"><circle r="4" fill="currentColor"/><circle r="7.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 2.5"/></svg>Has a signal</li>`;
 }
 
@@ -2633,16 +2640,16 @@ function renderRel() {
 
 function flowHTML(e, pe, A, B, msgs, ab, ba) {
   const max = Math.max(1, ab, ba);
-  const t = n => n ? (2 + 12 * n / max).toFixed(1) : 1;
+  const hs = n => (7 + 15 * n / max).toFixed(1);
+  const lbl = (n, f, to, cls) => `<span class="flow-label ${cls}${n ? "" : " is-zero"}">${esc(shortN(f))} → ${esc(shortN(to))} · <strong>${n}</strong> message${n === 1 ? "" : "s"}</span>`;
   const box = id => { const n = NODES.get(id); return `<div class="flow-node">${glyph(n.type)}<strong>${esc(n.label)}</strong><span>${esc(n.type === "employee" ? `${n.role} · ${n.dept}` : n.type === "external" ? `${n.role} · ${n.firm}` : n.sub)}</span></div>`; };
-  const arrow = (n, f, to, rev) => `<div class="flow-arrow${rev ? " is-rev" : ""}${n ? "" : " is-empty"}" style="--t:${t(n)}px"><span class="flow-label">${esc(shortN(f))} → ${esc(shortN(to))} · <strong>${n}</strong> message${n === 1 ? "" : "s"}</span><span class="flow-line" aria-hidden="true"><span class="shaft"></span><span class="head"></span></span></div>`;
   const rows = CHANNELS.filter(ch => e.channels[ch]).map(ch => {
     const on = state.channels.has(ch);
     const list = msgs.filter(m => m.ch === ch), x = list.filter(m => m.from === A).length;
     const un = (pe.unmon && pe.unmon.has(ch)) || (e.unmon && e.unmon.has(ch));
     return `<tr><th scope="row">${esc(ch)}</th><td class="num">${on ? x : "—"}</td><td class="num">${on ? list.length - x : "—"}</td><td>${on ? (un ? `<span class="tag is-unmon">Not captured</span>` : "Captured") : "Hidden by filter"}</td></tr>`;
   }).join("");
-  return `<div class="flow">${box(A)}<div class="flow-arrows">${arrow(ab, A, B)}${arrow(ba, B, A, true)}</div>${box(B)}</div>
+  return `<div class="flow">${box(A)}<div class="flow-arrows">${lbl(ab, A, B, "is-top")}<span class="flow-line" aria-hidden="true">${ba ? `<span class="head is-left" style="--h:${hs(ba)}px"></span>` : `<span class="cap"></span>`}<span class="shaft"></span>${ab ? `<span class="head is-right" style="--h:${hs(ab)}px"></span>` : `<span class="cap"></span>`}</span>${lbl(ba, B, A, "is-bottom")}</div>${box(B)}</div>
     <div class="table-scroll"><table class="doc-table flow-table"><thead><tr><th scope="col">Channel</th><th scope="col" class="num">${esc(shortN(A))} → ${esc(shortN(B))}</th><th scope="col" class="num">${esc(shortN(B))} → ${esc(shortN(A))}</th><th scope="col">Capture</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
